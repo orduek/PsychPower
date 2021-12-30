@@ -2,3 +2,5 @@
 
 export(binarize_data)
 export(get_freq)
+export(plot_pheno)
+export(test_pl)

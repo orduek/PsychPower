@@ -13,11 +13,18 @@ library(devtools)
 library(roxygen2)
 load_all()
 
+# creating function specific help file
 roxygenise()
 
 # installing from github
 library(devtools) # Make sure that the devtools library is loaded
 install_github("orduek/PsychPower")
 library(PsychPower)
-?get_freq
 
+
+a <- assess_power_law(db_counted)
+a
+plot_pheno(db_counted, 100)
+
+
+test_pl(db_counted, nThreads = 10, bootStrap = T, plot = T, nSims = 500)
