@@ -6,7 +6,7 @@ data_subset <- dfPCL5[,5:24]
 dfPCL5 <- dfPCL5[complete.cases(data_subset), ]
 
 dB <- binarize_data(dfPCL5[,5:24], 2)
-
+db_counted <- get_freq(dB)
 
 # building the package
 library(devtools)
@@ -14,3 +14,10 @@ library(roxygen2)
 load_all()
 
 roxygenise()
+
+# installing from github
+library(devtools) # Make sure that the devtools library is loaded
+install_github("orduek/PsychPower")
+library(PsychPower)
+
+
