@@ -18,5 +18,5 @@ A dataframe containing original columns (as v) and binarized columns (as v_bin)
 Binarizes the data from likert scale to 0s and 1s
 }
 \examples{
-data_bin <- binarizze_data(df, 2);
+data_bin <- binarize_data(df, 2);
 }

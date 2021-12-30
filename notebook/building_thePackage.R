@@ -19,5 +19,5 @@ roxygenise()
 library(devtools) # Make sure that the devtools library is loaded
 install_github("orduek/PsychPower")
 library(PsychPower)
-
+?get_freq
 
