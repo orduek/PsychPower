@@ -1,6 +1,6 @@
 Package: PsychPower
 Title: Creates Symptom Phenotypes and Assess Their Frequency Distribution
-Version: 0.0.0.2
+Version: 0.0.0.9000
 Authors@R: 
     person(given = "Or",
            family = "Duek",
@@ -20,7 +20,7 @@ Imports:
     dplyr (>= 1.0.0),
     plyr,
     ggplot2,
-    poweRlaw,
+    poweRlaw (>= 0.70.0),
     scales,
     cowplot
 Depends: R (>= 4.0.0)
