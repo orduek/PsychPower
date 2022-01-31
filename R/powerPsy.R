@@ -199,7 +199,6 @@ pheno_distributions <-
 #' @param nThreads The number CPUs for the bootstrapping (default=1)
 #' @param bootStrap whether to run the bootstrap or not
 #' @param rSeed the seed for randomization (default = 123)
-#'
 #' @return a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @details This function displays the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @examples
@@ -278,4 +277,31 @@ pheno_distributions_parameters <-
 
 
 
+## Function 7
+#' Compare distributions
+#'
+#' Using the frequency calculated with the get_freq() function test whether this is distributed power law or not
+#' @param data Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
+#' @return a matrix with the parameters of the comparisons
+#' @details This function compares parameters of the approximations of the best fitting power-law, log normal, and exponential distribution and outputs the p-values as a matrix
+#' @examples
+#' a <- pheno_distributions_parameters(df)
+#' @export
+compare_pheno_distributions <-
+  function(data) {
 
+    RESULTS <- matrix(ncol = 3, nrow = 3)
+    colnames(RESULTS) <- c("PowerLaw", "LogNormal", "Exponential")
+    rownames(RESULTS) <- c("PowerLaw", "LogNormal", "Exponential")
+    RESULTS[1,1] <- ""
+    RESULTS[1,2] <- round(poweRlaw::compare_distributions(m_ln_EQ, m_pl)$p_one_sided, 4)
+    RESULTS[1,3] <- round(poweRlaw::compare_distributions(m_ex_EQ, m_pl)$p_one_sided, 4)
+    RESULTS[2,1] <- round(poweRlaw::compare_distributions(m_pl,    m_ln_EQ)$p_one_sided, 4)
+    RESULTS[2,2] <- ""
+    RESULTS[2,3] <- round(poweRlaw::compare_distributions(m_ex_EQ, m_ln_EQ)$p_one_sided, 4)
+    RESULTS[3,1] <- round(poweRlaw::compare_distributions(m_pl,    m_ex_EQ)$p_one_sided, 4)
+    RESULTS[3,2] <- round(poweRlaw::compare_distributions(m_ln_EQ, m_ex_EQ)$p_one_sided, 4)
+    RESULTS[3,3] <- ""
+
+    return(RESULTS)
+  }
