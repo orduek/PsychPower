@@ -7,7 +7,7 @@
 #' @param cut_off the cutoff to which we would use to binarise (if its eqal or smaller than cutoff than it will be coded as zero)
 #' @return A dataframe containing original columns (as v) and binarized columns (as v_bin)
 #' @examples
-#' data_bin <- binarize_data(df, 2)
+#' # dont run data_bin <- binarize_data(df, 2)
 #' @export
 binarize_data <-
   function(data, cut_off) {
@@ -35,10 +35,13 @@ binarize_data <-
 #' Using only binarized data  - counting the frequency of the each profile
 #' @param data The dataset, containing v_bin columns (of binarized set)
 #' @return A dataframe containing frequency of each profile and the sum of scores (from binarized data) of each of these profiles
+#'
+#' @import dplyr
+#'
 #' @examples
 #' data_f <- get_freq(df)
 #' @export
-get_freq <- function(data) {
+Pheno_frequency <- function(data) {
 
   # first grab only v_bin columns
   data1 <- dplyr::select(data, starts_with("v_bin"))
@@ -62,10 +65,13 @@ get_freq <- function(data) {
 #' @param number_Phenotypes The number of symptom profiles to plott. Deafult = 100
 #' @param color The color of the phenotypes
 #' @return a plot
+#'
+#' @import ggplot2
+#'
 #' @examples
 #' data_f <- get_freq(df)
 #' @export
-plot_pheno <- function(data, number_Phenotypes=100, color = "grey26") {
+plot_Pheno <- function(data, number_Phenotypes=100, color = "grey26") {
 
   # order the data frame
   data2 <- data %>%
@@ -98,73 +104,20 @@ plot_pheno <- function(data, number_Phenotypes=100, color = "grey26") {
 }
 
 
-
-## Function 4
-#' Power Law analysis
-#'
-#' Using the frequency calculated with the get_freq() function test wether this is distributed powerlaw or not
-#' @param data The data set returned by the get_freq() function (including a "freq" column)
-#' @param nThreads The number cpus for the bootsraping (default=1)
-#' @param rSeed the seed for randomization (default = 123)
-#' @param plot whether you want the function to return a plot of the calculation as well, default = true
-#' @param bootStrap whether to run the bootstrap or not
-#' @return a matrix including the different measures of the powerlaw (x-min, alpha, p value and SDs)
-#' @details This function basically runs the powerLaw package basic assessment. Using the bootstrap allows to receive a p value of the chances this adheres to powerlaw or not. If p <0.05 we assume it adheres to powerlaw (from specific xmin value)
-#' @examples
-#' a <- test_pl(df)
-#' @export
-test_pl <-
-  function(data, nSims = 1000, nThreads = 1, rSeed = 123, plot = T, bootStrap = T) {
-
-    #### Prepare
-    Distribution <- data$freq
-    ### Power Law
-    m_pl <- displ$new(Distribution)
-    est_pl <- estimate_xmin(m_pl)
-    m_pl$setXmin(est_pl)
-
-    if (bootStrap == T) {
-      ## Bootstrap parameters
-      ## Test whether power law is possible
-      bs_p <- bootstrap_p(m_pl, no_of_sims = nSims, threads = nThreads, seed = rSeed)
-
-      RESULTS <- matrix(ncol = 5, nrow = 1)
-      colnames(RESULTS) <- c("Xmin", "alpha", "BootP", "SDxmin", "SDalpha")
-      RESULTS[1, 1] <- m_pl$xmin
-      RESULTS[1, 2] <- m_pl$pars
-      RESULTS[1, 3] <- bs_p$p
-      RESULTS[1, 4] <- sd(bs_p$bootstraps$xmin)
-      RESULTS[1, 5] <- sd(bs_p$bootstraps$pars)
-
-      if (plot == T) {
-        plot(bs_p)
-      }
-    } else {
-      RESULTS <- matrix(ncol = 2, nrow = 1)
-      colnames(RESULTS) <- c("Xmin", "alpha")
-      RESULTS[1, 1] <- m_pl$xmin
-      RESULTS[1, 2] <- m_pl$pars
-    }
-
-
-
-
-    return(RESULTS)
-  }
-
-
-
 ## Function 5
-#' Power Law analysis
+#' Distribution analysis
 #'
 #' Using the frequency calculated with the get_freq() function test whether this is distributed powerlaw or not
 #' @param data The data set returned by the get_freq() function (including a "freq" column)
 #' @return a list including the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @details This function performs poweRlaw functions and gives back best fitting distributions
+#'
+#' @import poweRlaw
+#'
 #' @examples
 #' a <- pheno_distributions(df)
 #' @export
-pheno_distributions <-
+Pheno_distributions <-
   function(data) {
 
     #### Prepare
@@ -210,7 +163,7 @@ pheno_distributions <-
 #' @examples
 #' a <- pheno_distributions_parameters(df)
 #' @export
-pheno_distributions_parameters <-
+describe_Pheno_distr <-
   function(data, nSims=1000, nThreads=1, bootStrap=T, rSeed = 123) {
 
     if (bootStrap==T) {
@@ -292,7 +245,7 @@ pheno_distributions_parameters <-
 #' @examples
 #' a <- compare_pheno_distributions(df)
 #' @export
-compare_pheno_distributions <-
+compare_Pheno_distr <-
   function(data) {
 
     RESULTS <- matrix(ncol = 3, nrow = 3)
@@ -321,10 +274,14 @@ compare_pheno_distributions <-
 #' @param limitx limits of the x-axis
 #' @return a plot
 #' @details This function plots parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
+#'
+#' @import ggplot2
+#' @import cowplot
+#'
 #' @examples
 #' a <- plot_pheno_distributions(df)
 #' @export
-plot_pheno_distributions<-
+plot_Pheno_distr<-
   function(data, limity = 10^-4, limitx = 10^3) {
 
     res_pl <- plot(m_pl)

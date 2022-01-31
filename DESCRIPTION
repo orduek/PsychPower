@@ -1,5 +1,5 @@
 Package: PsychPower
-Title: Calculates PowerLaw Distribution For Symptom Profile
+Title: Creates Symptom Phenotypes and Assess Their Frequency Distribution
 Version: 0.0.0.2
 Authors@R: 
     person(given = "Or",
@@ -12,9 +12,8 @@ Authors@R:
            role = c("aut", "cre"),
            email = "tobias.spiller@yale.edu",
            comment = c(ORCID = "0000-0002-0107-0743"))
-Description: What the package does (one paragraph). And does it work? Yes
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Description: Includes tools for the construction and analysis of symptom phenotypes.
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports:
