@@ -30,14 +30,14 @@ binarize_data <-
 
 
 ## Function 2
-#' Count frequency of symptoms' profiles
+#' Count phenotype frequency
 #'
 #' Using only binarized data  - counting the frequency of the each profile
 #' @param data The dataset, containing v_bin columns (of binarized set)
 #' @return A dataframe containing frequency of each profile and the sum of scores (from binarized data) of each of these profiles
 #'
 #' @import dplyr
-#'
+#' @importFrom  plyr count
 #' @examples
 #' data_f <- get_freq(df)
 #' @export
@@ -60,47 +60,58 @@ Pheno_frequency <- function(data) {
 ## Function 3
 #' Plot phenotypes
 #'
-#' Using the frequency calculated with the get_freq() function, plotts the N most common phenotypes
-#' @param data The dataset returned by the get_freq() function (including a "freq" column)
-#' @param number_Phenotypes The number of symptom profiles to plott. Deafult = 100
+#' Plotting the frequency of each phenotype in the sample in descending order
+#' @param data a dataframe or matrix
+#' @param freq column indicating phenotype frequency, default = "freq"
+#' @param n_Pheno The number of phenotypes plotted, default = 100
 #' @param color The color of the phenotypes
 #' @return a plot
 #'
 #' @import ggplot2
+#' @import dplyr
 #'
 #' @examples
-#' data_f <- get_freq(df)
+#' data_f <- plot_Pheno(df)
 #' @export
-plot_Pheno <- function(data, number_Phenotypes=100, color = "grey26") {
+plot_Pheno <- function(data, n_Pheno = 100, frequency = "freq", color = "grey26") {
 
-  # order the data frame
-  data2 <- data %>%
-    dplyr::arrange(desc(freq))
-  ## plotting most common phenotypes
-  freq1_top  <- data2 %>%
-    dplyr::top_n(freq, n = number_Phenotypes) %>%
-    dplyr::select(freq)
+  # Check frequency
+  if(!any(names(data_bin_f) == frequency)){
+    stop("Frequency colum not identified")
+  } else {
 
-  g <- ggplot(freq1_top, aes(x=as.factor(1:nrow(freq1_top)),y=freq)) +
-    geom_bar(stat = "identity",fill = color) +
-    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-    xlab(" ") +
-    ylab("") +
-    theme_minimal() +
-    theme(
-      plot.title = element_text(size=12),
-      axis.title.x = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
-      axis.title.y = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
-      axis.text.x = element_blank(),
-      axis.text.y = element_text(size=9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
-      axis.ticks = element_blank(),
-      panel.grid.major.x = element_blank(),
-      panel.grid.major.y = element_line(size=.2, color="black" ),
-      panel.grid.minor.y = element_blank(),
-      panel.border = element_rect(colour = "black", fill=NA, size=1))
+    # Identify column
+    names(data)[names(data) == frequency] <- "freq"
 
-  return(g)
+    # order the data frame
+    data2 <- data %>%
+      dplyr::arrange(desc(freq))
 
+    ## plotting most common phenotypes
+    freq1_top  <- data2 %>%
+      dplyr::top_n(freq, n = n_Phenotypes) %>%
+      dplyr::select(freq)
+
+    g <- ggplot2::ggplot(freq1_top, aes(x=as.factor(1:nrow(freq1_top)),y=freq)) +
+      ggplot2::geom_bar(stat = "identity",fill = color) +
+      ggplot2::scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+      ggplot2::xlab(" ") +
+      ggplot2::ylab("") +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(
+        plot.title = element_text(size=12),
+        axis.title.x = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.title.y = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
+        axis.ticks = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size=.2, color="black" ),
+        panel.grid.minor.y = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
+
+    return(g)
+  }
 }
 
 

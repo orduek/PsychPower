@@ -2,7 +2,7 @@
 % Please edit documentation in R/powerPsy.R
 \name{Pheno_frequency}
 \alias{Pheno_frequency}
-\title{Count frequency of symptoms' profiles}
+\title{Count phenotype frequency}
 \usage{
 Pheno_frequency(data)
 }

@@ -4,21 +4,23 @@
 \alias{plot_Pheno}
 \title{Plot phenotypes}
 \usage{
-plot_Pheno(data, number_Phenotypes = 100, color = "grey26")
+plot_Pheno(data, n_Pheno = 100, frequency = "freq", color = "grey26")
 }
 \arguments{
-\item{data}{The dataset returned by the get_freq() function (including a "freq" column)}
+\item{data}{a dataframe or matrix}
 
-\item{number_Phenotypes}{The number of symptom profiles to plott. Deafult = 100}
+\item{n_Pheno}{The number of phenotypes plotted, default = 100}
 
 \item{color}{The color of the phenotypes}
+
+\item{freq}{column indicating phenotype frequency, default = "freq"}
 }
 \value{
 a plot
 }
 \description{
-Using the frequency calculated with the get_freq() function, plotts the N most common phenotypes
+Plotting the frequency of each phenotype in the sample in descending order
 }
 \examples{
-data_f <- get_freq(df)
+data_f <- plot_Pheno(df)
 }
