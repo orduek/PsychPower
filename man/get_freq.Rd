@@ -16,5 +16,5 @@ A dataframe containing frequency of each profile and the sum of scores (from bin
 Using only binarized data  - counting the frequency of the each profile
 }
 \examples{
-data_f <- get_freq(df);
+data_f <- get_freq(df)
 }

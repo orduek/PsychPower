@@ -27,5 +27,5 @@ Using the frequency calculated with the get_freq() function test wether this is 
 This function basically runs the powerLaw package basic assessment. Using the bootstrap allows to receive a p value of the chances this adheres to powerlaw or not. If p <0.05 we assume it adheres to powerlaw (from specific xmin value)
 }
 \examples{
-a <- test_pl(df);
+a <- test_pl(df)
 }

@@ -13,11 +13,11 @@ pheno_distributions(data)
 a list including the approximations of the best fitting power-law, log normal, and exponential distribution
 }
 \description{
-Using the frequency calculated with the get_freq() function test wether this is distributed powerlaw or not
+Using the frequency calculated with the get_freq() function test whether this is distributed powerlaw or not
 }
 \details{
 This function performs poweRlaw functions and gives back best fitting distributions
 }
 \examples{
-a <- pheno_distributions(df);
+a <- pheno_distributions(df)
 }

@@ -18,5 +18,5 @@ a plot
 Using the frequency calculated with the get_freq() function, plotts the N most common phenotypes
 }
 \examples{
-data_f <- get_freq(df);
+data_f <- get_freq(df)
 }
