@@ -280,12 +280,11 @@ pheno_distributions_parameters <-
 ## Function 7
 #' Compare distributions
 #'
-#' Using the frequency calculated with the get_freq() function test whether this is distributed power law or not
 #' @param data Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @return a matrix with the parameters of the comparisons
 #' @details This function compares parameters of the approximations of the best fitting power-law, log normal, and exponential distribution and outputs the p-values as a matrix
 #' @examples
-#' a <- pheno_distributions_parameters(df)
+#' a <- compare_pheno_distributions(df)
 #' @export
 compare_pheno_distributions <-
   function(data) {
@@ -304,4 +303,58 @@ compare_pheno_distributions <-
     RESULTS[3,3] <- ""
 
     return(RESULTS)
+  }
+
+
+
+## Function 8
+#' Plot distributions
+#'
+#' @param data Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
+#' @param limity limits of the y-axis
+#' @param limitx limits of the x-axis
+#' @return a plot
+#' @details This function plots parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
+#' @examples
+#' a <- plot_pheno_distributions(df)
+#' @export
+plot_pheno_distributions<-
+  function(data, limity = 10^-4, limitx = 10^3) {
+
+    res_pl <- plot(m_pl)
+    line_pl <- lines(m_pl)
+    line_ln <- lines(m_ln_EQ)
+    line_ex <- lines(m_ex_EQ)
+
+    ## plot
+    p <- ggplot2::ggplot(res_pl, aes(x=x,y=y)) +
+      geom_point(size = 1)+
+      scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
+                    labels = scales::trans_format("log10", math_format(10^.x)),
+                    expand = c(0, 0),
+                    limits = c(limity, 1)) +
+      scale_x_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
+                    labels = scales::trans_format("log10", math_format(10^.x)),
+                    expand = c(0, 0),
+                    limits = c(1, limitx)) +
+      geom_line(data = line_pl, aes(x=x, y=y), color = "red", size = 1) +
+      geom_line(data = line_ln, aes(x=x, y=y), color = "blue", size = 1,linetype = "dashed")+
+      geom_line(data = line_ex, aes(x=x, y=y), color = "orange", size = 1,linetype = "twodash")+
+      xlab("") +
+      ylab("") +
+      ggtitle("")+
+      theme_minimal_grid() +
+      theme(
+        plot.title = element_text(size=11),
+        axis.title.x = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.title.y = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.text.x = element_text(size=9, color = "black"),
+        axis.text.y = element_text(size=9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
+        axis.ticks = element_blank(),
+        panel.grid.major.x = element_line(size=.2, color="black"),
+        panel.grid.major.y = element_line(size=.2, color="black"),
+        panel.grid.minor.y = element_blank(),
+        panel.border = element_rect(colour = "black", fill=NA, size=1))
+
+    return(p)
   }
