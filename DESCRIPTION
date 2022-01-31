@@ -1,6 +1,6 @@
 Package: PsychPower
 Title: Calculates PowerLaw Distribution For Symptom Profile
-Version: 0.0.0.1
+Version: 0.0.0.2
 Authors@R: 
     person(given = "Or",
            family = "Duek",
