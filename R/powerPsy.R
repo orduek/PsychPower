@@ -120,6 +120,7 @@ plot_Pheno <- function(data, n_Pheno = 100, frequency = "freq", color = "grey26"
 #'
 #' Using the frequency calculated with the get_freq() function test whether this is distributed powerlaw or not
 #' @param data The data set returned by the get_freq() function (including a "freq" column)
+#' @param freq column indicating phenotype frequency, default = "freq"
 #' @return a list including the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @details This function performs poweRlaw functions and gives back best fitting distributions
 #'
@@ -129,7 +130,12 @@ plot_Pheno <- function(data, n_Pheno = 100, frequency = "freq", color = "grey26"
 #' a <- pheno_distributions(df)
 #' @export
 Pheno_distributions <-
-  function(data) {
+  function(data, frequency = "freq") {
+
+    # Check frequency
+    if(!any(names(data_bin_f) == frequency)){
+      stop("Frequency colum not identified")
+    } else {
 
     #### Prepare
     Distribution <- data$freq
@@ -157,7 +163,7 @@ Pheno_distributions <-
     RESULTS[[3]] <- m_ex_EQ
     return(RESULTS)
   }
-
+}
 
 
 ## Function 6
