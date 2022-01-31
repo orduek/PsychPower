@@ -60,35 +60,41 @@ get_freq <- function(data) {
 #' Using the frequency calculated with the get_freq() function, plotts the N most common phenotypes
 #' @param data The dataset returned by the get_freq() function (including a "freq" column)
 #' @param number_Phenotypes The number of symptom profiles to plott. Deafult = 100
+#' @param color The color of the phenotypes
 #' @return a plot
 #' @examples
 #' data_f <- get_freq(df)
 #' @export
-plot_pheno <- function(data, number_Phenotypes = 100) {
+plot_pheno <- function(data, number_Phenotypes=100, color = "grey26") {
 
   # order the data frame
   data2 <- data %>%
-    arrange(desc(freq))
+    dplyr::arrange(desc(freq))
   ## plotting most common phenotypes
-  freq1_top <- data2 %>%
-    top_n(freq, n = number_Phenotypes) %>%
-    select(freq)
+  freq1_top  <- data2 %>%
+    dplyr::top_n(freq, n = number_Phenotypes) %>%
+    dplyr::select(freq)
 
-  # The frequency of the fifty most common symptom combinations
-  g <- ggplot(freq1_top, aes(x = as.factor(1:nrow(freq1_top)), y = freq)) +
-    geom_hline(yintercept = c((median(data$freq)), (max(freq1_top$freq))), color = "grey", size = 0.3) + # max and median
-    geom_bar(stat = "identity", fill = "grey26") +
+  g <- ggplot(freq1_top, aes(x=as.factor(1:nrow(freq1_top)),y=freq)) +
+    geom_bar(stat = "identity",fill = color) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
     xlab(" ") +
-    ylab("Number of endorsements") +
-    theme_classic() +
+    ylab("") +
+    theme_minimal() +
     theme(
+      plot.title = element_text(size=12),
+      axis.title.x = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+      axis.title.y = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
       axis.text.x = element_blank(),
+      axis.text.y = element_text(size=9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
       axis.ticks = element_blank(),
-      plot.title = element_text(hjust = 0.5)
-    ) +
-    scale_y_continuous(breaks = c(round((median(data$freq)), 0), round((max(freq1_top$freq)), 0))) # max and median
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(size=.2, color="black" ),
+      panel.grid.minor.y = element_blank(),
+      panel.border = element_rect(colour = "black", fill=NA, size=1))
 
   return(g)
+
 }
 
 
@@ -209,7 +215,7 @@ pheno_distributions_parameters <-
 
     if (bootStrap==T) {
       ## Bootstrap parameters
-      bs_p_pl = poweRlaw::bootstrap_p(data[[1]],    no_of_sims = nSims, threads = nThreads, seed = rSeed)
+      bs_p_pl = poweRlaw::bootstrap_p(data[[1]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
       bs_p_ln = poweRlaw::bootstrap_p(data[[2]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
       bs_p_ex = poweRlaw::bootstrap_p(data[[3]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
 
