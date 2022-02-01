@@ -2,38 +2,28 @@
 % Please edit documentation in R/Frequency_Distributions.R
 \name{describe_pheno_distr}
 \alias{describe_pheno_distr}
-\title{Parameters of distributions}
+\title{Parameters of frequency distributions}
 \usage{
-describe_pheno_distr(
-  data,
-  nSims = 1000,
-  nThreads = 1,
-  bootStrap = T,
-  rSeed = 123
-)
+describe_pheno_distr(data, bootStrap = T, nBoots = 1000, nCores = 1)
 }
 \arguments{
-\item{data}{The data set returned by the get_freq() function (including a "freq" column)}
+\item{data}{A list of three "poweRlaw" objects.}
 
-\item{nSims}{The number of simulations used in the bootstrapping}
+\item{bootStrap}{whether to run the bootstrap or not (default = TRUE)}
 
-\item{nThreads}{The number CPUs for the bootstrapping (default=1)}
+\item{nBoots}{Number of bootstraps (default = 1000)}
 
-\item{bootStrap}{whether to run the bootstrap or not}
-
-\item{rSeed}{the seed for randomization (default = 123)}
+\item{nCores}{Number of cores to use in computing results (default = 1).}
 }
 \value{
 a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 }
 \description{
-Using the frequency calculated with the get_freq() function test whether this is distributed power law or not
-}
-\details{
-This function displays the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
+This function gives back the parameters of the best fitting distributions estimated with
+\code{pheno_distributions}.
 }
 \examples{
 \dontrun{
-a <- describe_pheno_distr(df)
+a <- describe_pheno_distr(df, bootStrap = T, nBoots = 5, nCores = 1)
 }
 }

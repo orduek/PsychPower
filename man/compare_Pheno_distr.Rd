@@ -21,5 +21,5 @@ This function compares parameters of the approximations of the best fitting powe
 \examples{
 \dontrun{
 a <- compare_pheno_distr(df)
- }
+}
 }

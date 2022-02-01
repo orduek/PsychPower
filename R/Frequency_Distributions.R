@@ -21,130 +21,166 @@ pheno_distributions <-
   function(data, frequency = "freq") {
 
     # Check frequency
-    if(!any(names(data) == frequency)){
+    if (!any(names(data) == frequency)) {
       stop("Frequency colum not identified")
-    } else {
+      } else {
 
-      ### Power Law
-      m_pl <- poweRlaw::displ$new(data$freq)
-      est_pl <- poweRlaw::estimate_xmin(m_pl)
-      m_pl$setXmin(est_pl)
+        ### Power Law
+        m_pl <- poweRlaw::displ$new(data$freq)
+        est_pl <- poweRlaw::estimate_xmin(m_pl)
+        m_pl$setXmin(est_pl)
 
-      ## Log normal with Xmin of PL
-      m_ln <- poweRlaw::dislnorm$new(data$freq)
-      m_ln$setXmin(m_pl$getXmin())
-      est_m_ln <- poweRlaw::estimate_pars(m_ln)
-      m_ln$setPars(est_m_ln)
+        ## Log normal with Xmin of PL
+        m_ln <- poweRlaw::dislnorm$new(data$freq)
+        m_ln$setXmin(m_pl$getXmin())
+        est_m_ln <- poweRlaw::estimate_pars(m_ln)
+        m_ln$setPars(est_m_ln)
 
-      ## Exponential with Xmin of PL
-      m_ex <- poweRlaw::disexp$new(data$freq)
-      m_ex$setXmin(m_pl$getXmin())
-      est_m_ex <- poweRlaw::estimate_pars(m_ex)
-      m_ex$setPars(est_m_ex)
+        ## Exponential with Xmin of PL
+        m_ex <- poweRlaw::disexp$new(data$freq)
+        m_ex$setXmin(m_pl$getXmin())
+        est_m_ex <- poweRlaw::estimate_pars(m_ex)
+        m_ex$setPars(est_m_ex)
 
-      res <- list()
-      res[[1]] <- m_pl
-      res[[2]] <- m_ln
-      res[[3]] <- m_ex
-      return(res)
+        res <- list()
+        res[[1]] <- m_pl
+        res[[2]] <- m_ln
+        res[[3]] <- m_ex
+
+        return(res)
     }
   }
 
 
 
-
-
-
-
-
-
-
 ### Function 7 #####################################################################################
-#' Parameters of distributions
+#' Parameters of frequency distributions
 #'
-#' Using the frequency calculated with the get_freq() function test whether this is distributed power law or not
-#' @param data The data set returned by the get_freq() function (including a "freq" column)
-#' @param nSims The number of simulations used in the bootstrapping
-#' @param nThreads The number CPUs for the bootstrapping (default=1)
-#' @param bootStrap whether to run the bootstrap or not
-#' @param rSeed the seed for randomization (default = 123)
+#' This function gives back the parameters of the best fitting distributions estimated with
+#' \code{pheno_distributions}.
+#' @param data A list of three "poweRlaw" objects.
+#' @param bootStrap whether to run the bootstrap or not (default = TRUE)
+#' @param nBoots Number of bootstraps (default = 1000)
+#' @param nCores Number of cores to use in computing results (default = 1).
+#'
+#' @importFrom  poweRlaw bootstrap_p
+#'
 #' @return a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
-#' @details This function displays the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @examples
 #' \dontrun{
-#' a <- describe_pheno_distr(df)
+#' a <- describe_pheno_distr(df, bootStrap = T, nBoots = 5, nCores = 1)
 #' }
 #' @export
 describe_pheno_distr <-
-  function(data, nSims=1000, nThreads=1, bootStrap=T, rSeed = 123) {
+  function(data, bootStrap = T, nBoots = 1000, nCores = 1) {
 
-    if (bootStrap==T) {
-      ## Bootstrap parameters
-      bs_p_pl = poweRlaw::bootstrap_p(data[[1]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
-      bs_p_ln = poweRlaw::bootstrap_p(data[[2]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
-      bs_p_ex = poweRlaw::bootstrap_p(data[[3]], no_of_sims = nSims, threads = nThreads, seed = rSeed)
-
-      res <- matrix(ncol = 9, nrow = 3)
-      rownames(res) <- c("PowerLaw", "LogNormal", "Exponential")
-      colnames(res) <- c("Xmin", "alpha/exponent", "log(mu)", "log(sigma)", "Boot_P_Value", "SDxmin",
-                         "SDalpha/exponent", "log(mu)", "log(sigma)")
-      res[1,1] <- data[[1]]$xmin
-      res[1,2] <- data[[1]]$pars
-      res[1,3] <- ""
-      res[1,4] <- ""
-      res[1,5] <- bs_p_pl$p
-      res[1,6] <- sd(bs_p_pl$bootstraps$xmin)
-      res[1,7] <- sd(bs_p_pl$bootstraps$pars)
-      res[1,8] <- ""
-      res[1,9] <- ""
-
-      res[2,1] <- data[[2]]$xmin
-      res[2,2] <- ""
-      res[2,3] <- data[[2]]$pars[1]
-      res[2,4] <- data[[2]]$pars[2]
-      res[2,5] <- bs_p_ln$p
-      res[2,6] <- sd(bs_p_ln$bootstraps$xmin)
-      res[2,7] <-
-        res[2,8] <- sd(bs_p_ln$bootstraps$pars1)
-      res[2,9] <- sd(bs_p_ln$bootstraps$pars2)
-
-      res[3,1] <- data[[3]]$xmin
-      res[3,2] <- data[[3]]$pars
-      res[3,3] <- ""
-      res[3,4] <- ""
-      res[3,5] <- bs_p_ex$p
-      res[3,6] <- sd(bs_p_ex$bootstraps$xmin)
-      res[3,7] <- sd(bs_p_ex$bootstraps$pars)
-      res[3,8] <- ""
-      res[3,9] <- ""
-
-      if (plot==T) {
-        plot(bs_p_pl)
-        plot(bs_p_ln)
-        plot(bs_p_ex)}
-
+    # Check list
+    if (length(data) != 3) {
+      stop("Inputs must consist of 3 poweRlaw objects")
     } else {
 
-      res <- matrix(ncol = 4, nrow = 3)
-      colnames(res) <- c("Xmin", "alpha/exponent", "log(mu)", "log(sigma)")
-      rownames(res) <- c("PowerLaw", "LogNormal", "Exponential")
-      res[1,1] <- data[[1]]$xmin
-      res[1,2] <- data[[1]]$pars
-      res[1,3] <- ""
-      res[1,4] <- ""
+      # Check poweRlaw objects 1
+      if (class(data[[1]]) != "poweRlaw") {
+        stop("Inputs must consist of 3 poweRlaw objects")
+      } else {
 
-      res[2,1] <- data[[2]]$xmin
-      res[2,2] <- ""
-      res[2,3] <- data[[2]]$pars[1]
-      res[2,4] <- data[[2]]$pars[2]
+        # Check poweRlaw objects 2
+        if (class(data[[2]]) != "poweRlaw") {
+          stop("Inputs must consist of 3 poweRlaw objects")
+        } else {
 
-      res[3,1] <- data[[3]]$xmin
-      res[3,2] <- data[[3]]$pars
-      res[3,3] <- ""
-      res[3,4] <- ""
+          # Check poweRlaw objects 3
+          if (class(data[[3]]) != "poweRlaw") {
+            stop("Inputs must consist of 3 poweRlaw objects")
+          } else {
+
+            if (bootStrap == T) {
+              ## Bootstrap parameters
+              bs_p_pl <- bootstrap_p(data[[1]], no_of_sims = nBoots, threads = nCores)
+              bs_p_ln <- bootstrap_p(data[[2]], no_of_sims = nBoots, threads = nCores)
+              bs_p_ex <- bootstrap_p(data[[3]], no_of_sims = nBoots, threads = nCores)
+
+              res <- matrix(ncol = 3, nrow = 9)
+              colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
+              rownames(res) <- c(
+                "Xmin", "SDxmin", "alpha/exponent", "SDalpha/exponent",
+                "log(mu)", "SDlog(mu)", "log(sigma)", "SDlog(sigma)",
+                "Boot_P_Value"
+              )
+              res[1, 1] <- data[[1]]$xmin
+              res[2, 1] <- sd(bs_p_pl$bootstraps$xmin)
+              res[3, 1] <- data[[1]]$pars
+              res[4, 1] <- sd(bs_p_pl$bootstraps$pars)
+              res[5, 1] <- NA
+              res[6, 1] <- NA
+              res[7, 1] <- NA
+              res[8, 1] <- NA
+              res[9, 1] <- bs_p_pl$p
+
+              res[1, 2] <- data[[2]]$xmin
+              res[2, 2] <- sd(bs_p_ln$bootstraps$xmin)
+              res[3, 2] <- NA
+              res[4, 2] <- NA
+              res[5, 2] <- data[[2]]$pars[1]
+              res[6, 2] <- sd(bs_p_ln$bootstraps$pars1)
+              res[7, 2] <- data[[2]]$pars[2]
+              res[8, 2] <- sd(bs_p_ln$bootstraps$pars2)
+              res[9, 2] <- bs_p_ln$p
+
+              res[1, 3] <- data[[3]]$xmin
+              res[2, 3] <- sd(bs_p_ex$bootstraps$xmin)
+              res[3, 3] <- data[[3]]$pars
+              res[4, 3] <- sd(bs_p_ex$bootstraps$pars)
+              res[5, 3] <- NA
+              res[6, 3] <- NA
+              res[7, 3] <- NA
+              res[8, 3] <- NA
+              res[9, 3] <- bs_p_ex$p
+
+            } else {
+
+              res <- matrix(ncol = 3, nrow = 9)
+              colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
+              rownames(res) <- c(
+                "Xmin", "SDxmin", "alpha/exponent", "SDalpha/exponent",
+                "log(mu)", "SDlog(mu)", "log(sigma)", "SDlog(sigma)",
+                "Boot_P_Value")
+
+              res[1, 1] <- data[[1]]$xmin
+              res[2, 1] <- NA
+              res[3, 1] <- data[[1]]$pars
+              res[4, 1] <- NA
+              res[5, 1] <- NA
+              res[6, 1] <- NA
+              res[7, 1] <- NA
+              res[8, 1] <- NA
+              res[9, 1] <- NA
+
+              res[1, 2] <- data[[2]]$xmin
+              res[2, 2] <- NA
+              res[3, 2] <- NA
+              res[4, 2] <- NA
+              res[5, 2] <- data[[2]]$pars[1]
+              res[6, 2] <- NA
+              res[7, 2] <- data[[2]]$pars[2]
+              res[8, 2] <- NA
+              res[9, 2] <- NA
+
+              res[1, 3] <- data[[3]]$xmin
+              res[2, 3] <- NA
+              res[3, 3] <- data[[3]]$pars
+              res[4, 3] <- NA
+              res[5, 3] <- NA
+              res[6, 3] <- NA
+              res[7, 3] <- NA
+              res[8, 3] <- NA
+              res[9, 3] <- NA
+            }
+            return(res)
+          }
+        }
+      }
     }
-
-    return(res)
   }
 
 
@@ -158,23 +194,22 @@ describe_pheno_distr <-
 #' @examples
 #' \dontrun{
 #' a <- compare_pheno_distr(df)
-#'  }
+#' }
 #' @export
 compare_pheno_distr <-
   function(data) {
-
     res <- matrix(ncol = 3, nrow = 3)
     colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
     rownames(res) <- c("PowerLaw", "LogNormal", "Exponential")
-    res[1,1] <- ""
-    res[1,2] <- round(poweRlaw::compare_distributions(m_ln, m_pl)$p_one_sided, 4)
-    res[1,3] <- round(poweRlaw::compare_distributions(m_ex, m_pl)$p_one_sided, 4)
-    res[2,1] <- round(poweRlaw::compare_distributions(m_pl,    m_ln)$p_one_sided, 4)
-    res[2,2] <- ""
-    res[2,3] <- round(poweRlaw::compare_distributions(m_ex, m_ln)$p_one_sided, 4)
-    res[3,1] <- round(poweRlaw::compare_distributions(m_pl,    m_ex)$p_one_sided, 4)
-    res[3,2] <- round(poweRlaw::compare_distributions(m_ln, m_ex)$p_one_sided, 4)
-    res[3,3] <- ""
+    res[1, 1] <- ""
+    res[1, 2] <- round(poweRlaw::compare_distributions(m_ln, m_pl)$p_one_sided, 4)
+    res[1, 3] <- round(poweRlaw::compare_distributions(m_ex, m_pl)$p_one_sided, 4)
+    res[2, 1] <- round(poweRlaw::compare_distributions(m_pl, m_ln)$p_one_sided, 4)
+    res[2, 2] <- ""
+    res[2, 3] <- round(poweRlaw::compare_distributions(m_ex, m_ln)$p_one_sided, 4)
+    res[3, 1] <- round(poweRlaw::compare_distributions(m_pl, m_ex)$p_one_sided, 4)
+    res[3, 2] <- round(poweRlaw::compare_distributions(m_ln, m_ex)$p_one_sided, 4)
+    res[3, 3] <- ""
 
     return(res)
   }
@@ -199,43 +234,47 @@ compare_pheno_distr <-
 #' a <- plot_pheno_distr(df)
 #' }
 #' @export
-plot_pheno_distr<-
+plot_pheno_distr <-
   function(data, limity = 10^-4, limitx = 10^3) {
-
     res_pl <- plot(m_pl)
     line_pl <- lines(m_pl)
     line_ln <- lines(m_ln)
     line_ex <- lines(m_ex)
 
     ## plot
-    p <- ggplot2::ggplot(res_pl, aes(x=x,y=y)) +
-      geom_point(size = 1)+
-      scale_y_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
-                    labels = scales::trans_format("log10", math_format(10^.x)),
-                    expand = c(0, 0),
-                    limits = c(limity, 1)) +
-      scale_x_log10(breaks = scales::trans_breaks("log10", function(x) 10^x),
-                    labels = scales::trans_format("log10", math_format(10^.x)),
-                    expand = c(0, 0),
-                    limits = c(1, limitx)) +
-      geom_line(data = line_pl, aes(x=x, y=y), color = "red", size = 1) +
-      geom_line(data = line_ln, aes(x=x, y=y), color = "blue", size = 1,linetype = "dashed")+
-      geom_line(data = line_ex, aes(x=x, y=y), color = "orange", size = 1,linetype = "twodash")+
+    p <- ggplot2::ggplot(res_pl, aes(x = x, y = y)) +
+      geom_point(size = 1) +
+      scale_y_log10(
+        breaks = scales::trans_breaks("log10", function(x) 10^x),
+        labels = scales::trans_format("log10", math_format(10^.x)),
+        expand = c(0, 0),
+        limits = c(limity, 1)
+      ) +
+      scale_x_log10(
+        breaks = scales::trans_breaks("log10", function(x) 10^x),
+        labels = scales::trans_format("log10", math_format(10^.x)),
+        expand = c(0, 0),
+        limits = c(1, limitx)
+      ) +
+      geom_line(data = line_pl, aes(x = x, y = y), color = "red", size = 1) +
+      geom_line(data = line_ln, aes(x = x, y = y), color = "blue", size = 1, linetype = "dashed") +
+      geom_line(data = line_ex, aes(x = x, y = y), color = "orange", size = 1, linetype = "twodash") +
       xlab("") +
       ylab("") +
-      ggtitle("")+
+      ggtitle("") +
       theme_minimal_grid() +
       theme(
-        plot.title = element_text(size=11),
-        axis.title.x = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
-        axis.title.y = element_text(size=9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
-        axis.text.x = element_text(size=9, color = "black"),
-        axis.text.y = element_text(size=9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
+        plot.title = element_text(size = 11),
+        axis.title.x = element_text(size = 9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.title.y = element_text(size = 9, margin = margin(t = 0, r = 0, b = 0, l = 0)),
+        axis.text.x = element_text(size = 9, color = "black"),
+        axis.text.y = element_text(size = 9, color = "black", margin = margin(t = 0, r = 0, b = 0, l = 5)),
         axis.ticks = element_blank(),
-        panel.grid.major.x = element_line(size=.2, color="black"),
-        panel.grid.major.y = element_line(size=.2, color="black"),
+        panel.grid.major.x = element_line(size = .2, color = "black"),
+        panel.grid.major.y = element_line(size = .2, color = "black"),
         panel.grid.minor.y = element_blank(),
-        panel.border = element_rect(colour = "black", fill=NA, size=1))
+        panel.border = element_rect(colour = "black", fill = NA, size = 1)
+      )
 
     return(p)
   }
