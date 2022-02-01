@@ -1,4 +1,4 @@
-use_logo("https://github.com/orduek/PsychPower/blob/Patch1/man/figures/logo.png")
+<img src="man/figures/logo.png" width = 250 />
 
 # The PsychPower package
 An R package to define, assess, and describe symptom phenotypes and their frequency distribution in a sample.
