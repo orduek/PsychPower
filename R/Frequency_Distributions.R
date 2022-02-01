@@ -80,18 +80,18 @@ describe_pheno_distr <-
     } else {
 
       # Check poweRlaw objects 1
-      if (class(data[[1]]) != "poweRlaw") {
-        stop("Inputs must consist of 3 poweRlaw objects")
+      if (class(data[[1]]) != "displ") {
+        stop("First element of input must be poweRlaw object *displ* (power-law)")
       } else {
 
         # Check poweRlaw objects 2
-        if (class(data[[2]]) != "poweRlaw") {
-          stop("Inputs must consist of 3 poweRlaw objects")
+        if (class(data[[2]]) != "dislnorm") {
+          stop("Second element of input must be poweRlaw object *dislnorm* (log-normal)")
         } else {
 
           # Check poweRlaw objects 3
-          if (class(data[[3]]) != "poweRlaw") {
-            stop("Inputs must consist of 3 poweRlaw objects")
+          if (class(data[[3]]) != "disexp") {
+            stop("Thir element of input must be poweRlaw object *disexp* (exponential)")
           } else {
 
             if (bootStrap == T) {
