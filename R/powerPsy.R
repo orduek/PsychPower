@@ -10,7 +10,7 @@ utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex"))
 #'  Values > cut-off will be binarized to 1.
 #' @return A dataframe containing the original columns named VN (with N: 1 -> number of columns)
 #' and binarized columns named v_binN (with N: 1 -> number of columns).
-#' @import dplyr case_when
+#' @importFrom dplyr case_when
 #' @examples
 #' \dontrun{
 #' data_bin <- binarize(df, 2)
@@ -53,8 +53,8 @@ binarize <- function(data, cut_off) {
 #' and the sum of the values of all the variables constituting the phenotype
 #' The output has as many rows as phenotypes.
 #'
-#' @import dplyr select
-#' @import dplyr mutate
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
 #' @importFrom  plyr count
 #'
 #' @examples
@@ -156,8 +156,6 @@ plot_pheno <- function(data, frequency = "freq", n_phenotypes = 100, color = "gr
 #' the frequency of the most common phenotype
 #' the median frequency of all phenotypes
 #' @importFrom  stats median
-#' @importFrom  stats max
-#' @importFrom  stats nrow
 #' @examples
 #' \dontrun{
 #' description <- describe_pheno(df, frequency = "freq")
