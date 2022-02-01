@@ -15,7 +15,7 @@ Values > cut-off will be binarized to 1.}
 }
 \value{
 A dataframe containing the original columns named VN (with N: 1 -> number of columns)
-and binarized columns named v_binN (with N: 1 -> number of columns)
+and binarized columns named v_binN (with N: 1 -> number of columns).
 }
 \description{
 Binarizes vectors or columns based on a cut-off into 0 and 1.
@@ -24,5 +24,5 @@ Binarizes vectors or columns based on a cut-off into 0 and 1.
 \dontrun{
 data_bin <- binarize(df, 2)
 data_bin
- }
+}
 }
