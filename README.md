@@ -7,8 +7,10 @@ An R package to define, assess, and describe symptom phenotypes and their freque
 
 This package is currently only hosted on GitHub. The PsychPower package can be installed using the usual way:
 
+```{r, eval = FALSE}
 install.packages("devtools")
 devtools::install_github("orduek/PsychPower")
+```
 
 # Getting Started
 
@@ -18,7 +20,8 @@ The vignettes demonstrate how to use the package to define phenotypes, describe 
 
 # Bugs, Issues, and Contributions
 
-If you have any suggestions, feature requests or if you find a bug, please report them using GitHub [issue tracker](https://github.com/orduek/PsychPower/issues). Any contributions via a pull request are very welcome!
+* If you have any suggestions, feature requests or if you find a bug, please report them using GitHub [issue tracker](https://github.com/orduek/PsychPower/issues). 
+* Any contributions via a pull request are very welcome!
 
 # Cite
 To cite `PsychPower` please cite:
