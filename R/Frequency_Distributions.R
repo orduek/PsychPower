@@ -186,11 +186,18 @@ describe_pheno_distr <-
 
 
 ### Function 8 #####################################################################################
-#' Compare distributions
+#' Compare frequency distributions
 #'
-#' @param data Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
-#' @return a matrix with the parameters of the comparisons
-#' @details This function compares parameters of the approximations of the best fitting power-law, log normal, and exponential distribution and outputs the p-values as a matrix
+#' Testing the fit of different phenotype frequency approximations
+#' @param data list of three poweRlaw objects
+#' @return a matrix with P values
+#' @details This function compares parameters of the approximations of the best fitting
+#' power-law, log normal, and exponential distribution and outputs the P values of one-sided tests.
+#' P values < 0.05 indicate refusal of HO (no difference in fit) for the distribution listed in the row
+#' (i.e., P values < 0.05 indicate that the distribution in the row has worse fit than the #'distribution in the column.)
+#'
+#' @importFrom  poweRlaw compare_distributions
+#'
 #' @examples
 #' \dontrun{
 #' a <- compare_pheno_distr(df)
@@ -198,22 +205,49 @@ describe_pheno_distr <-
 #' @export
 compare_pheno_distr <-
   function(data) {
-    res <- matrix(ncol = 3, nrow = 3)
-    colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
-    rownames(res) <- c("PowerLaw", "LogNormal", "Exponential")
-    res[1, 1] <- ""
-    res[1, 2] <- round(poweRlaw::compare_distributions(m_ln, m_pl)$p_one_sided, 4)
-    res[1, 3] <- round(poweRlaw::compare_distributions(m_ex, m_pl)$p_one_sided, 4)
-    res[2, 1] <- round(poweRlaw::compare_distributions(m_pl, m_ln)$p_one_sided, 4)
-    res[2, 2] <- ""
-    res[2, 3] <- round(poweRlaw::compare_distributions(m_ex, m_ln)$p_one_sided, 4)
-    res[3, 1] <- round(poweRlaw::compare_distributions(m_pl, m_ex)$p_one_sided, 4)
-    res[3, 2] <- round(poweRlaw::compare_distributions(m_ln, m_ex)$p_one_sided, 4)
-    res[3, 3] <- ""
 
-    return(res)
+    # Check list
+    if (length(data) != 3) {
+      stop("Inputs must consist of 3 poweRlaw objects")
+    } else {
+
+      # Check poweRlaw objects 1
+      if (class(data[[1]]) != "displ") {
+        stop("First element of input must be poweRlaw object *displ* (power-law)")
+      } else {
+
+        # Check poweRlaw objects 2
+        if (class(data[[2]]) != "dislnorm") {
+          stop("Second element of input must be poweRlaw object *dislnorm* (log-normal)")
+        } else {
+
+          # Check poweRlaw objects 3
+          if (class(data[[3]]) != "disexp") {
+            stop("Thir element of input must be poweRlaw object *disexp* (exponential)")
+          } else {
+
+            res <- matrix(ncol = 3, nrow = 3)
+            colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
+            rownames(res) <- c("PowerLaw", "LogNormal", "Exponential")
+            res[1, 1] <- NA
+            res[1, 2] <- round(compare_distributions(data[[2]], data[[1]])$p_one_sided, 4)
+            res[1, 3] <- round(compare_distributions(data[[3]], data[[1]])$p_one_sided, 4)
+            res[2, 1] <- round(compare_distributions(data[[1]], data[[2]])$p_one_sided, 4)
+            res[2, 2] <- NA
+            res[2, 3] <- round(compare_distributions(data[[3]], data[[2]])$p_one_sided, 4)
+            res[3, 1] <- round(compare_distributions(data[[1]], data[[3]])$p_one_sided, 4)
+            res[3, 2] <- round(compare_distributions(data[[2]], data[[3]])$p_one_sided, 4)
+            res[3, 3] <- NA
+
+            message("CAUTION: P values of one-sided tests (testing the distribution in the row).
+                    Values < 0.05 indicate *refusal* of HO (no difference in fit).")
+            return(res)
+
+          }
+        }
+      }
+    }
   }
-
 
 
 ### Function 9 #####################################################################################

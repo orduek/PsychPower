@@ -2,21 +2,24 @@
 % Please edit documentation in R/Frequency_Distributions.R
 \name{compare_pheno_distr}
 \alias{compare_pheno_distr}
-\title{Compare distributions}
+\title{Compare frequency distributions}
 \usage{
 compare_pheno_distr(data)
 }
 \arguments{
-\item{data}{Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution}
+\item{data}{list of three poweRlaw objects}
 }
 \value{
-a matrix with the parameters of the comparisons
+a matrix with P values
 }
 \description{
-Compare distributions
+Testing the fit of different phenotype frequency approximations
 }
 \details{
-This function compares parameters of the approximations of the best fitting power-law, log normal, and exponential distribution and outputs the p-values as a matrix
+This function compares parameters of the approximations of the best fitting
+power-law, log normal, and exponential distribution and outputs the P values of one-sided tests.
+P values < 0.05 indicate refusal of HO (no difference in fit) for the distribution listed in the row
+(i.e., P values < 0.05 indicate that the distribution in the row has worse fit than the #'distribution in the column.)
 }
 \examples{
 \dontrun{
