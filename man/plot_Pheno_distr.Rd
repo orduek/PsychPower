@@ -9,21 +9,18 @@ plot_pheno_distr(data, limity = 10^-4, limitx = 10^3)
 \arguments{
 \item{data}{Parameters of the approximations of the best fitting power-law, log normal, and exponential distribution}
 
-\item{limity}{limits of the y-axis}
+\item{limity}{limits of the y-axis (default = 10^-4)}
 
-\item{limitx}{limits of the x-axis}
+\item{limitx}{limits of the x-axis (default = 10^3)}
 }
 \value{
-a plot
+a ggplot object
 }
 \description{
-Plot distributions
-}
-\details{
 This function plots parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 }
 \examples{
 \dontrun{
-a <- plot_pheno_distr(df)
+a <- plot_pheno_distr(distributions, limity = 10^-4, limitx = 10^3)
 }
 }

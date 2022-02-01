@@ -1,4 +1,4 @@
-utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex"))
+utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x"))
 
 ### Function 1 #####################################################################################
 #' Binarization
