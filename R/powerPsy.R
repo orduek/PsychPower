@@ -55,7 +55,8 @@ binarize <- function(data, cut_off) {
 #'
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate
-#' @importFrom  plyr count
+#' @importFrom plyr count
+#' @importFrom tidyselect starts_with
 #'
 #' @examples
 #' \dontrun{

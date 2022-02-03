@@ -63,7 +63,7 @@ pheno_distributions <-
 #' @param nBoots Number of bootstraps (default = 1000)
 #' @param nCores Number of cores to use in computing results (default = 1).
 #'
-#' @importFrom  poweRlaw bootstrap_p
+#' @importFrom poweRlaw bootstrap_p
 #'
 #' @return a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @examples

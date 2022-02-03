@@ -1,8 +1,8 @@
 ---
-title: "introduction"
+title: "PsychPower - An Introduction"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{introduction}
+  %\VignetteIndexEntry{PsychPower - An Introduction}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,6 +14,184 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(PsychPower)
+# 1. Aim
+
+This vignette outlines how `PsychPower` can be used to determine how many and which unique symptom phenotypes are present in a sample, and how the frequency distribution of all phenotypes can be described mathematically. A detailed motivation for this analysis as well as the technicalities of the procedure are outlined in [Spiller et al. (2021)](10.31234/osf.io/g4kf8).
+
+# 2. Installation
+
+This package is currently only hosted on GitHub. Installation requires the `devtools` package to be installed and loaded.
+
+```{r Installation, echo=TRUE}
+#library("devtools")
+#devtools::install_github("orduek/PsychPower")
+install.packages("/Users/trs/Desktop/PsychPower_0.0.0.9003.tgz", repos = NULL, type="source")
 ```
+
+Once the `PsychPower` is installed it can be loaded the usual way.
+
+```{r load, echo=TRUE, warning=FALSE}
+library("PsychPower")
+library("tidyselect")
+library("poweRlaw")
+```
+
+# 3. Example
+
+This example outlines the analysis performed in [Spiller et al. (2021)](10.31234/osf.io/g4kf8) using sample data also include in the same publication.
+
+The sample data consist of 39,700 complete answers to the 13-item anxiety subscale of the Depression Anxiety Stress Scales (DASS) [Nieuwenhuijsen et al. (2003)](https://oem.bmj.com/content/60/suppl_1/i77.long). All 13 items were rated on a 4-point Likert scale, ranging from 1 to 4. The raw data were collected and provided by the [Open-Source Psychometrics Project](https://openpsychometrics.org/about/).
+
+## 3.1 Load Data
+
+First, we load the sample data.
+
+```{r, echo=TRUE}
+data("data_test")
+```
+
+Next, we inspect the first 10 rows (participants) and 5 of the total 13 columns (questionnaire items) of the sample data.
+
+```{r, echo=FALSE}
+data_test[,1:5]
+```
+
+## 3.2 Define Phenotypes
+
+As outlined above, a phenotype is defined as a unique combination of a finite set of items (in this example symptoms) used to describe or define a psychological construct (in this example a mental disorder).
+
+### 3.2.1 Binarize variables
+
+Here, we are only interested in presence or absence of a symptom and not in their severity. Therefore, we need to dichotomize or `binarize` the participants answers. We have to choose a cut-off, defining which ratings should be indicative of the presence or absence of a symptom.
+
+|                                                                                                                                                                                                                                                                                       |
+|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NOTE**: `binarize()` handles the cut-off by binarzing any value smaller or equal to the cut-off to 0 and any value greater than the cut-off to 1. It names the binarized variables "v_binN", with ascending N starting with 1. The binarized variables are added to the input data. |
+
+In this example, a cut-off of 2 is chosen based on the literature.
+
+```{r, echo=TRUE}
+data_binarized <- binarize(data_test, cut_off = 2)
+```
+
+Inspection of the binarized ratings of the first 5 variables reveals that the ratings have been binarized.
+
+```{r , echo=FALSE}
+data_binarized[,14:19]
+```
+
+### 3.2.2 Determine Phenotye Frequency
+
+Next, we determine the number of unique phenotypes in the sample and count how many times each unique phenotypes was reported.
+
+```{r , echo=TRUE}
+data_frequency <- pheno_frequency(data_binarized, target_columns = starts_with("v_bin"))
+```
+
+|                                                                                                                                                                                                                                                                                                                                                 |
+|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NOTE**:                                                                                                                                                                                                                                                                                                                                       |
+| \* `pheno_frequency()` uses `target_columns = starts_with("v_bin")` as default, expecting that the variables were dichotomized with `binarize()`. However, the columns used to define the phenotype of interest can also be selected manually using `target_columns = [j:k]`(e.g., if the ratings were already collected as a binary response). |
+| \* The output of `pheno_frequency()` is a dataframe in which every row represents one unique phenotype. The frequency of each phenotype is indicated in the column "freq". Hence, the dataframe has not the same length as the initial data.                                                                                                    |
+
+## 3.3 Describe Phenotypes
+
+The characteristics of the phenotypes present in the sample are described.
+
+### 3.3.1 Most common phenotypes
+
+First, we inspect the symptom combinations of the most common phenotypes (in this example, the one of the 5 most common).
+
+```{r , echo=TRUE}
+common_pheno(data_frequency, frequency = "freq", n_phenotypes = 5)
+```
+
+|                                                                                                                                                                                                                                                                                                                                                                        |
+|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NOTE**: `common_pheno()` needs to identify the frequency of each phenotypes. By default, it assumes that this information is stored in the "freq" column because this is the output of `pheno_frequency()`. However, this can be overruled using the argument `frequency = "j"` with j specifying the name of the column indicating the frequency of each phenotype. |
+
+### 3.3.2 Characteristics
+
+Second, the number of unique phenotypes, the frequency of the most common phenotype and the median frequency of all phenotypes is provided.
+
+```{r , echo=TRUE}
+desc_pheno <- describe_pheno(data_frequency, frequency = "freq")
+desc_pheno
+```
+
+### 3.3.3 Plot
+
+Third, we plot the frequency of the most common phenotypes. In this plot, each bar represents a unique phenotype with its height corresponding to the frequency indicted on the Y axis.
+
+```{r , echo=TRUE}
+fig1 <- plot_pheno(data_frequency, frequency = "freq", n_phenotypes = 50, color = "grey26")
+fig1
+```
+
+## 3.4 Phenotype frequency distribution
+
+The distribution shown in Figure 1 (see above) is starkly skewed. There are multiple skewed distributions and we would like to test which of these distributions best approximates the frequency distribution. We first determine the best fitting approximations we rely on the methods developed by [Clauset et al, 2009](http://arxiv.org/abs/0706.1062) implemented in the [poweRlaw](https://cran.r-project.org/web/packages/poweRlaw/index.html) package. Subsequently the functions `describe_pheno_distr()`,`compare_pheno_distr()`, and `plot_pheno_distr()` can be used to describe and plot the results as well as to test the comparative for of the three different distributions.
+
+### 3.4.1 Estimate
+
+The distributions can be approximated in the following way.
+
+```{r , echo=TRUE}
+freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
+```
+
+----
+**NOTE**:          
+* The function `pheno_distributions()` outputs a list of three `poweRlaw` objects. These objects have the following order: 1. a power-law model, 2. a log-normal model and 3. an exponential model. This exact order must be present for the functions `describe_pheno_distr()`,`compare_pheno_distr()`, and `plot_pheno_distr()` to work. Importantly, these objects can be handled (e.g., visualized) like any other `poweRlaw` objects using the methods reported in the vignettes of the `poweRlaw` package. |
+* X min of all distributions is set to the x min of the best fitting power-law model (see [Clauset et al, 2009](http://arxiv.org/abs/0706.1062))                                                                                                      ----
+ 
+### 3.4.2 Describe
+
+The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to ≥ 1000 which will result in an extended running time (it is set to 5 for illustrative purpose here).
+
+```{r , echo=TRUE}
+desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = F, nBoots = 5, nCores = 1)
+```
+
+### 3.4.3 Compare
+
+The fit of the three distributions are compared using **one-sided** tests with alpha set to 0.05. Of note, the output is a list of *P* values. Because the tests are one-sided the output is not symmetric. The *P* value shown is always the one for testing the null hypothesis (HO) that the distribution in the row has equal fit to the distribution in the column.
+
+```{r , echo=TRUE}
+comp_fit_freq <- compare_pheno_distr(freq_distribution)
+```
+
+Results:
+```{r echo=FALSE, echo=TRUE}
+comp_fit_freq
+```
+
+Hence, the exponential distribution has sig. inferior fit compared to the power-law and the log-normal distribution. (*P* = .0027 and .0026 ) 
+
+### 3.4.4 Plot
+
+Finally, the phenotype frequency distributions and the best fitting approximated distributions are plotted. In this plot the Y-Axis, X-Axis, Dots.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, , echo=TRUE}
+fig2 <- plot_pheno_distr(freq_distribution, limity = 10^-4, limitx = 10^4)
+```
+
+```{r message=FALSE, warning=FALSE, echo=TRUE}
+fig2 
+```
+
+The red solid line represents the best fitting power-law model. The blue dashed line corresponds to the best fitting log-normal model and the double dashed yellow line to the exponential model.
+
+|                                                                                                                                                                    |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **NOTE**: The limits of the x and y axis have to be chosen to depict the full distribution. `limity = 10^-j` and `limitx = 10^k` can be used to adjust the limits. |
+
+# 4. Citation
+
+To cite `PsychPower` in publications, please use:
+
+Spiller, T. R., Duek, O., Helmer, M., Murray, J. D., von Känel, R., & Harpaz-Rotem, I. (2021, October 8). The uncommon is common: Structural similarities of symptom heterogeneity across mental disorders. DOI: [10.31234/osf.io/g4kf8](https://psyarxiv.com/g4kf8/)
+
+# 5. References
+
+Text text text text text text
