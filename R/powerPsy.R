@@ -64,7 +64,7 @@ binarize <- function(data, cut_off) {
 #' data_f
 #' }
 #' @export
-pheno_frequency <- function(data, target_columns = starts_with("v_bin")) {
+pheno_frequency <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
 
   # Check whether data contains characters or logical
   if (any(sapply(data, is.character) == TRUE) |

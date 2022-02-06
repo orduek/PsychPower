@@ -4,7 +4,7 @@
 \alias{pheno_frequency}
 \title{Determine phenotype frequency}
 \usage{
-pheno_frequency(data, target_columns = starts_with("v_bin"))
+pheno_frequency(data, target_columns = tidyselect::starts_with("v_bin"))
 }
 \arguments{
 \item{data}{The dataset, containing v_bin columns (of binarized set)}

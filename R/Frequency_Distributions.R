@@ -292,7 +292,6 @@ plot_pheno_distr <- function(data, limity = 10^-4, limitx = 10^3) {
 
           ## plot
           p <- ggplot(res_pl, aes(x = x, y = y)) +
-            geom_point(size = 1) +
             scale_y_log10(
               breaks = trans_breaks("log10", function(x) 10^x),
               labels = trans_format("log10", math_format(10^.x)),
@@ -306,6 +305,7 @@ plot_pheno_distr <- function(data, limity = 10^-4, limitx = 10^3) {
             geom_line(data = line_pl, aes(x = x, y = y), color = "red", size = 1) +
             geom_line(data = line_ln, aes(x = x, y = y), color = "blue", size = 1, linetype = "dashed") +
             geom_line(data = line_ex, aes(x = x, y = y), color = "orange", size = 1, linetype = "twodash") +
+            geom_point(size = 1) +
             xlab("") +
             ylab("") +
             theme_minimal() +
