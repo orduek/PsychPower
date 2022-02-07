@@ -128,7 +128,7 @@ fig1
 
 ## 3.4 Phenotype frequency distribution
 
-The distribution shown in Figure 1 (see above) is starkly skewed. There are multiple skewed distributions and we would like to test which of these distributions best approximates the frequency distribution. We first determine the best fitting approximations relying on the methods developed by [Clauset et al, 2009](http://arxiv.org/abs/0706.1062) and implemented in the [poweRlaw](https://cran.r-project.org/web/packages/poweRlaw/index.html) package. Subsequently the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` are used to describe and plot the results as well as to test the comparative for of the three different distributions.
+The distribution shown in Figure 1 (see above) is starkly skewed. There are multiple skewed distributions and we would like to test which of these distributions best approximates the frequency distribution. We first determine the best fitting approximations relying on the methods developed by [Clauset et al, 2009](https://arxiv.org/abs/0706.1062) and implemented in the [poweRlaw](https://CRAN.R-project.org/package=poweRlaw) package. Subsequently the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` are used to describe and plot the results as well as to test the comparative for of the three different distributions.
 
 ### 3.4.1 Estimate
 

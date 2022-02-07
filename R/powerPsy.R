@@ -6,7 +6,7 @@ utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x"))
 #' Binarizes vectors or columns based on a cut-off into 0 and 1.
 #' @param data A dataset containing only the columns which are to be binarized
 #' @param cut_off A cutoff used to binarize.
-#'  Values ≤ cut-off will be binarized to 0,
+#'  Values <= cut-off will be binarized to 0,
 #'  Values > cut-off will be binarized to 1.
 #' @return A dataframe containing the original columns named VN (with N: 1 -> number of columns)
 #' and binarized columns named v_binN (with N: 1 -> number of columns).

@@ -26,4 +26,4 @@ The vignettes demonstrate how to use the package to define phenotypes, describe 
 # Cite
 To cite `PsychPower` in publications, please use:
  - Spiller, T. R., Duek, O., Helmer, M., Murray, J. D., von Känel, R., & Harpaz-Rotem, I. (2021, October 8). The uncommon is common: Structural similarities of symptom heterogeneity across mental disorders.
- [10.31234/osf.io/g4kf8](https://psyarxiv.com/g4kf8/)
+ [LINK](https://psyarxiv.com/g4kf8/)

@@ -10,7 +10,7 @@ binarize(data, cut_off)
 \item{data}{A dataset containing only the columns which are to be binarized}
 
 \item{cut_off}{A cutoff used to binarize.
-Values ≤ cut-off will be binarized to 0,
+Values <= cut-off will be binarized to 0,
 Values > cut-off will be binarized to 1.}
 }
 \value{
