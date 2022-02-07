@@ -25,6 +25,6 @@ Uses the phenotype frequency calculated with the pheno_frequency() function.
 }
 \examples{
 \dontrun{
-distributions <- pheno_distributions(df, frequency = "freq")
+freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
 }
 }

@@ -22,7 +22,7 @@ Determines the frequency of each unique phenotype in the dataframe
 }
 \examples{
 \dontrun{
-data_f <- pheno_frequency(df, target_columns = 1:12)
-data_f
+data_frequency <- pheno_frequency(data_binarized, target_columns = tidyselect::starts_with("v_bin"))
+data_frequency
 }
 }

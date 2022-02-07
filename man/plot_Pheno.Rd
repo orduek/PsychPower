@@ -23,7 +23,7 @@ a plot
 }
 \examples{
 \dontrun{
-fig1 <- plot_pheno(df, frequency = "freq", n_phenotypes = 100, color = "grey26")
+fig1 <- plot_pheno(data_frequency, frequency = "freq", n_phenotypes = 100, color = "grey26")
 fig1
 }
 }

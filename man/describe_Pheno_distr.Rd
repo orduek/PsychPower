@@ -24,6 +24,6 @@ This function gives back the parameters of the best fitting distributions estima
 }
 \examples{
 \dontrun{
-a <- describe_pheno_distr(df, bootStrap = T, nBoots = 5, nCores = 1)
+desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, nBoots = 1000, nCores = 1)
 }
 }

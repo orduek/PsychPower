@@ -23,7 +23,7 @@ Uses the frequency calculated with the pheno_frequency() function.
 }
 \examples{
 \dontrun{
-description <- describe_pheno(df, frequency = "freq")
-description
+desc_pheno <- describe_pheno(data_frequency, frequency = "freq")
+desc_pheno
 }
 }

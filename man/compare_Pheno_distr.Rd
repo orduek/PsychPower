@@ -23,6 +23,6 @@ P values < 0.05 indicate refusal of HO (no difference in fit) for the distributi
 }
 \examples{
 \dontrun{
-a <- compare_pheno_distr(df)
+comp_fit_freq <- compare_pheno_distr(freq_distribution)
 }
 }

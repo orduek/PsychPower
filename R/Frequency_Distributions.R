@@ -14,7 +14,7 @@
 #' @import poweRlaw
 #' @examples
 #' \dontrun{
-#' distributions <- pheno_distributions(df, frequency = "freq")
+#' freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
 #' }
 #' @export
 pheno_distributions <-
@@ -68,7 +68,7 @@ pheno_distributions <-
 #' @return a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @examples
 #' \dontrun{
-#' a <- describe_pheno_distr(df, bootStrap = T, nBoots = 5, nCores = 1)
+#' desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, nBoots = 1000, nCores = 1)
 #' }
 #' @export
 describe_pheno_distr <-
@@ -198,7 +198,7 @@ describe_pheno_distr <-
 #'
 #' @examples
 #' \dontrun{
-#' a <- compare_pheno_distr(df)
+#' comp_fit_freq <- compare_pheno_distr(freq_distribution)
 #' }
 #' @export
 compare_pheno_distr <-
@@ -260,7 +260,8 @@ compare_pheno_distr <-
 #'
 #' @examples
 #' \dontrun{
-#' a <- plot_pheno_distr(distributions, limity = 10^-4, limitx = 10^3)
+#' fig2 <- plot_pheno_distr(freq_distribution, limity = 10^-4, limitx = 10^4)
+#' fig2
 #' }
 #' @export
 plot_pheno_distr <- function(data, limity = 10^-4, limitx = 10^3) {

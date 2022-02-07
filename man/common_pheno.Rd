@@ -21,6 +21,6 @@ Prints the value of each variable of the most common phenotypes
 }
 \examples{
 \dontrun{
-common_pheno(df, frequency = "freq", n_phenotypes = 5)
+common_pheno(data_frequency, frequency = "freq", n_phenotypes = 5)
 }
 }

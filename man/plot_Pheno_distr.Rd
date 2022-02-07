@@ -21,6 +21,7 @@ This function plots parameters of the approximations of the best fitting power-l
 }
 \examples{
 \dontrun{
-a <- plot_pheno_distr(distributions, limity = 10^-4, limitx = 10^3)
+fig2 <- plot_pheno_distr(freq_distribution, limity = 10^-4, limitx = 10^4)
+fig2
 }
 }

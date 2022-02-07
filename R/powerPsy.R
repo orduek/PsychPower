@@ -13,8 +13,8 @@ utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x"))
 #' @importFrom dplyr case_when
 #' @examples
 #' \dontrun{
-#' data_bin <- binarize(df, 2)
-#' data_bin
+#' data_binarized <- binarize(data_test, cut_off = 2)
+#' data_binarized
 #' }
 #' @export
 binarize <- function(data, cut_off) {
@@ -60,8 +60,8 @@ binarize <- function(data, cut_off) {
 #'
 #' @examples
 #' \dontrun{
-#' data_f <- pheno_frequency(df, target_columns = 1:12)
-#' data_f
+#' data_frequency <- pheno_frequency(data_binarized, target_columns = tidyselect::starts_with("v_bin"))
+#' data_frequency
 #' }
 #' @export
 pheno_frequency <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
@@ -103,7 +103,7 @@ pheno_frequency <- function(data, target_columns = tidyselect::starts_with("v_bi
 #'
 #' @examples
 #' \dontrun{
-#' fig1 <- plot_pheno(df, frequency = "freq", n_phenotypes = 100, color = "grey26")
+#' fig1 <- plot_pheno(data_frequency, frequency = "freq", n_phenotypes = 100, color = "grey26")
 #' fig1
 #' }
 #' @export
@@ -159,8 +159,8 @@ plot_pheno <- function(data, frequency = "freq", n_phenotypes = 100, color = "gr
 #' @importFrom  stats median
 #' @examples
 #' \dontrun{
-#' description <- describe_pheno(df, frequency = "freq")
-#' description
+#' desc_pheno <- describe_pheno(data_frequency, frequency = "freq")
+#' desc_pheno
 #' }
 #' @export
 describe_pheno <- function(data, frequency = "freq") {
@@ -200,7 +200,7 @@ describe_pheno <- function(data, frequency = "freq") {
 #'
 #' @examples
 #' \dontrun{
-#' common_pheno(df, frequency = "freq", n_phenotypes = 5)
+#' common_pheno(data_frequency, frequency = "freq", n_phenotypes = 5)
 #' }
 #' @export
 common_pheno <- function(data, frequency = "freq", n_phenotypes = 5) {

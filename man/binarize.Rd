@@ -22,7 +22,7 @@ Binarizes vectors or columns based on a cut-off into 0 and 1.
 }
 \examples{
 \dontrun{
-data_bin <- binarize(df, 2)
-data_bin
+data_binarized <- binarize(data_test, cut_off = 2)
+data_binarized
 }
 }

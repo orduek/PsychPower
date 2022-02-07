@@ -16,16 +16,15 @@ knitr::opts_chunk$set(
 
 # 1. Aim
 
-This vignette outlines how `PsychPower` can be used to determine how many and which unique symptom phenotypes are present in a sample, and how the frequency distribution of all phenotypes in the same sample can be described mathematically. A detailed motivation for this analysis as well as the technicalities of the procedure are outlined in [Spiller et al. (2021)](10.31234/osf.io/g4kf8).
+This vignette outlines how `PsychPower` can be used to determine how many and which unique symptom phenotypes are present in a sample, and how the frequency distribution of all phenotypes in the same sample can be described mathematically. A detailed motivation for this analysis as well as the technicalities of the procedure are outlined in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/).
 
 # 2. Installation
 
 This package is currently only hosted on GitHub. Installation requires the `devtools` package to be installed and loaded.
 
 ```{r Installation, echo=TRUE}
-#library("devtools")
-#devtools::install_github("orduek/PsychPower")
-install.packages("~/Desktop/PsychPower_0.0.0.9003.tar.gz", repos = NULL, type="source")
+library("devtools")
+devtools::install_github("orduek/PsychPower")
 ```
 
 Once the `PsychPower` is installed it can be loaded the usual way.
@@ -36,7 +35,7 @@ library("PsychPower")
 
 # 3. Example
 
-This example outlines the analysis performed in [Spiller et al. (2021)](10.31234/osf.io/g4kf8) using sample data also include in the same publication.
+This example outlines the analysis performed in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/) using sample data also include in the same publication.
 
 The sample data consist of 39,700 complete answers to the 13-item anxiety subscale of the Depression Anxiety Stress Scales (DASS; [Nieuwenhuijsen et al. (2003)](https://oem.bmj.com/content/60/suppl_1/i77.long)). All 13 items were rated on a 4-point Likert scale, ranging from 1 to 4. The raw data were collected and provided by the [Open-Source Psychometrics Project](https://openpsychometrics.org/about/).
 
@@ -140,7 +139,7 @@ freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
 
 ----
 **NOTE**: The function `pheno_distributions()` outputs a list of three `poweRlaw` objects. These objects have the following order: 1. a power-law model, 2. a log-normal model and 3. an exponential model. This exact order must be present for the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` to work. Importantly, these objects can be handled (e.g., visualized) like any other `poweRlaw` objects using the methods reported in the vignettes of the `poweRlaw` package.
-To allow for direct comparisons of the three models, the minimum (Xmin) must be the same in all three models. Xmin of all distributions is set to the Xmin of the best fitting power-law model (for more details see [Clauset et al, 2009](http://arxiv.org/abs/0706.1062)). 
+To allow for direct comparisons of the three models, the minimum (Xmin) must be the same in all three models. Xmin of all distributions is set to the Xmin of the best fitting power-law model (for more details see [Clauset et al, 2009](https://arxiv.org/abs/0706.1062)). 
 ----
 
 ### 3.4.2 Describe
@@ -148,7 +147,7 @@ To allow for direct comparisons of the three models, the minimum (Xmin) must be 
 The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to ≥ 1000 which will result in an extended running time (it is set to 5 for illustrative purpose here).
 
 ```{r , echo=TRUE}
-desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = F, nBoots = 5, nCores = 1)
+desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, nBoots = 5, nCores = 1)
 ```
 
 ### 3.4.3 Compare
@@ -186,7 +185,7 @@ fig2
 
 To cite `PsychPower` in publications, please use:
 
-Spiller, T. R., Duek, O., Helmer, M., Murray, J. D., von Känel, R., & Harpaz-Rotem, I. (2021, October 8). The uncommon is common: Structural similarities of symptom heterogeneity across mental disorders. DOI: [10.31234/osf.io/g4kf8](https://psyarxiv.com/g4kf8/)
+Spiller, T. R., Duek, O., Helmer, M., Murray, J. D., von Känel, R., & Harpaz-Rotem, I. (2021, October 8). The uncommon is common: Structural similarities of symptom heterogeneity across mental disorders. DOI: 10.31234/osf.io/g4kf8
 
 # 5. References
 
