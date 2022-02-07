@@ -1,3 +1,5 @@
 ^PsychPower\.Rproj$
 ^\.Rproj\.user$
 notebook*
+^LICENSE\.md$
+^data-raw$
