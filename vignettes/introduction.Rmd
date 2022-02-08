@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to PsychPower"
-output: rmarkdown::html_vignette
+output: pdf_document
 vignette: >
   %\VignetteIndexEntry{An Introduction to PsychPower}
   %\VignetteEngine{knitr::rmarkdown}
@@ -67,9 +67,7 @@ In this example, a cut-off of 2 is chosen based on the literature.
 data_binarized <- binarize(data_test, cut_off = 2)
 ```
 
-----
 **NOTE**: `binarize()` handles the cut-off by binarzing any value smaller or equal to the cut-off to 0 and any value greater than the cut-off to 1. It names the binarized variables "v_binN", with ascending N starting with 1. The binarized variables are added to the input data.
-----
 
 Inspection of the binarized ratings of the first 5 variables reveals that the ratings have been binarized.
 
@@ -85,10 +83,9 @@ Next, we determine the number of unique phenotypes in the sample and count how m
 data_frequency <- pheno_frequency(data_binarized, target_columns = tidyselect::starts_with("v_bin"))
 ```
 
-----
+
 **NOTE**: The function `pheno_frequency()` uses `target_columns = tidyselect::starts_with("v_bin")` as default, expecting that the variables were dichotomized with `binarize()`. However, the columns used to define the phenotype of interest can also be selected manually using `target_columns = [j:k]` (e.g., if the ratings were already collected as a binary response).
 The output of `pheno_frequency()` is a dataframe in which every row represents one unique phenotype. The frequency of each phenotype is indicated in the column "freq". Hence, whenever there is at least one phenotype that is reported more than once, the dataframe has *not* the same length as the initial data.      
-----
                                             
 
 ## 3.3 Describe Phenotypes
@@ -103,9 +100,9 @@ First, we inspect the symptom combinations of the most common phenotypes (in thi
 common_pheno(data_frequency, frequency = "freq", n_phenotypes = 5)
 ```
 
-----
+
 **NOTE**: `common_pheno()` needs to identify the frequency of each phenotypes. By default, it assumes that this information is stored in the "freq" column assuming the frequency was calculated using `pheno_frequency()`. However, this can be overruled using the argument `frequency = "j"` with j specifying the name of the column indicating the frequency of each phenotype.
-----
+
 
 ### 3.3.2 Characteristics
 
@@ -137,10 +134,10 @@ The distributions can be approximated in the following way.
 freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
 ```
 
-----
+
 **NOTE**: The function `pheno_distributions()` outputs a list of three `poweRlaw` objects. These objects have the following order: 1. a power-law model, 2. a log-normal model and 3. an exponential model. This exact order must be present for the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` to work. Importantly, these objects can be handled (e.g., visualized) like any other `poweRlaw` objects using the methods reported in the vignettes of the `poweRlaw` package.
 To allow for direct comparisons of the three models, the minimum (Xmin) must be the same in all three models. Xmin of all distributions is set to the Xmin of the best fitting power-law model (for more details see [Clauset et al, 2009](https://arxiv.org/abs/0706.1062)). 
-----
+
 
 ### 3.4.2 Describe
 
@@ -178,9 +175,9 @@ fig2 <- plot_pheno_distr(freq_distribution, limity = 10^-4, limitx = 10^4)
 fig2 
 ```
 
-----
+
 **NOTE**: The limits of the x and y axis have to be chosen to depict the full distribution. `limity = 10^-j` and `limitx = 10^k` can be used to adjust the limits. 
-----
+
 
 # 4. Citation
 
