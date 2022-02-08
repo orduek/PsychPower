@@ -16,7 +16,7 @@ devtools::install_github("orduek/PsychPower")
 
 The vignettes demonstrate how to use the package to define phenotypes, describe and count all unique phenotypes in a sample, approximate phenotype frequency using the [poweRlaw](https://CRAN.R-project.org/package=poweRlaw) package following the methods outlined by [Clauset et al, 2009](https://arxiv.org/abs/0706.1062), and plot the results.
 
-* [Vignette 1](LINK)
+* [Vignette 1](https://osf.io/2k7nx/)
 
 # Bugs, Issues, and Contributions
 
