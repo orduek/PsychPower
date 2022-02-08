@@ -22,7 +22,7 @@ This vignette outlines how `PsychPower` can be used to determine how many and wh
 
 This package is currently only hosted on GitHub. Installation requires the `devtools` package to be installed and loaded.
 
-```{r Installation, echo=TRUE}
+```{r Installation, eval=FALSE, include=TRUE}
 library("devtools")
 devtools::install_github("orduek/PsychPower")
 ```
