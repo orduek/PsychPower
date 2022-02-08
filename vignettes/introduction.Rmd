@@ -1,6 +1,6 @@
 ---
 title: "An Introduction to PsychPower"
-output: rmarkdown::html_vignette
+output: pdf_document
 vignette: >
   %\VignetteIndexEntry{An Introduction to PsychPower}
   %\VignetteEngine{knitr::rmarkdown}
@@ -144,10 +144,11 @@ To allow for direct comparisons of the three models, the minimum (Xmin) must be 
 
 ### 3.4.2 Describe
 
-The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to ≥ 1000 which will result in an extended running time (it is set to 5 for illustrative purpose here).
+The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to 1000 or more which will result in an extended running time (it is set to 5 for illustrative purpose here).
 
 ```{r , echo=TRUE}
 desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, nBoots = 5, nCores = 1)
+desc_freq
 ```
 
 ### 3.4.3 Compare
@@ -186,7 +187,3 @@ fig2
 To cite `PsychPower` in publications, please use:
 
 Spiller, T. R., Duek, O., Helmer, M., Murray, J. D., von Känel, R., & Harpaz-Rotem, I. (2021, October 8). The uncommon is common: Structural similarities of symptom heterogeneity across mental disorders. DOI: 10.31234/osf.io/g4kf8
-
-# 5. References
-
-Text text text text text text

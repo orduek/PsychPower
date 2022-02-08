@@ -63,9 +63,6 @@ pheno_distributions <-
 #' @param nBoots Number of bootstraps (default = 1000)
 #' @param nCores Number of cores to use in computing results (default = 1).
 #'
-#' @importFrom poweRlaw bootstrap_p
-#' @importFrom poweRlaw dist_rand
-#'
 #' @return a matrix with the parameters of the approximations of the best fitting power-law, log normal, and exponential distribution
 #' @examples
 #' \dontrun{
@@ -194,8 +191,6 @@ describe_pheno_distr <-
 #' power-law, log normal, and exponential distribution and outputs the P values of one-sided tests.
 #' P values < 0.05 indicate refusal of HO (no difference in fit) for the distribution listed in the row
 #' (i.e., P values < 0.05 indicate that the distribution in the row has worse fit than the #'distribution in the column.)
-#'
-#' @importFrom  poweRlaw compare_distributions
 #'
 #' @examples
 #' \dontrun{
