@@ -5,6 +5,9 @@ vignette: >
   %\VignetteIndexEntry{An Introduction to PsychPower}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+author:
+  - Or Duek, Yale University
+  - Tobias R. Spiller, Yale University
 ---
 
 ```{r, include = FALSE}
@@ -49,7 +52,7 @@ data("data_test")
 
 Next, we inspect the first 10 rows (participants) and 5 of the total 13 columns (questionnaire items) of the sample data.
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 data_test[,1:5]
 ```
 
@@ -71,7 +74,7 @@ data_binarized <- binarize(data_test, cut_off = 2)
 
 Inspection of the binarized ratings of the first 5 variables reveals that the ratings have been binarized.
 
-```{r , echo=FALSE}
+```{r, echo=TRUE}
 data_binarized[,14:19]
 ```
 
@@ -80,12 +83,13 @@ data_binarized[,14:19]
 Next, we determine the number of unique phenotypes in the sample and count how many times each unique phenotypes was reported.
 
 ```{r , echo=TRUE}
-data_frequency <- pheno_frequency(data_binarized, target_columns = tidyselect::starts_with("v_bin"))
+data_frequency <- pheno_frequency(
+  data_binarized, target_columns = tidyselect::starts_with("v_bin"))
 ```
 
 
 **NOTE**: The function `pheno_frequency()` uses `target_columns = tidyselect::starts_with("v_bin")` as default, expecting that the variables were dichotomized with `binarize()`. However, the columns used to define the phenotype of interest can also be selected manually using `target_columns = [j:k]` (e.g., if the ratings were already collected as a binary response).
-The output of `pheno_frequency()` is a dataframe in which every row represents one unique phenotype. The frequency of each phenotype is indicated in the column "freq". Hence, whenever there is at least one phenotype that is reported more than once, the dataframe has *not* the same length as the initial data.      
+The output of `pheno_frequency()` is a dataframe in which every row represents one unique phenotype. The frequency of each phenotype is indicated in the column "freq". Hence, whenever there is at least one phenotype that is reported more than once, the dataframe does *not* have the same length as the initial data.      
                                             
 
 ## 3.3 Describe Phenotypes
@@ -118,7 +122,8 @@ desc_pheno
 Third, we plot the frequency of the most common phenotypes. In this plot, each bar represents a unique phenotype with its height corresponding to the frequency indicted on the Y axis.
 
 ```{r, fig.height=4, fig.width=6, echo=TRUE}
-fig1 <- plot_pheno(data_frequency, frequency = "freq", n_phenotypes = 50, color = "grey26")
+fig1 <- plot_pheno(data_frequency, frequency = "freq", 
+                   n_phenotypes = 50, color = "grey26")
 fig1
 ```
 
@@ -144,9 +149,12 @@ To allow for direct comparisons of the three models, the minimum (Xmin) must be 
 The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to 1000 or more which will result in an extended running time (it is set to 5 for illustrative purpose here).
 
 ```{r , echo=TRUE}
-desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, nBoots = 5, nCores = 1)
+desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, 
+                                  nBoots = 5, nCores = 1)
 desc_freq
 ```
+
+The Xmin indicates the minimal value of X in all three models. Alpha indicates the base in the power-law model, exponent the exponent in the exponential model. Mu and sigma are the two parameters that describe a log-normal distribution. Boot_P_Value is the *P* value of a goodness-of-fit test. Values smaller than 0.05 indicates refusal of the null hypothesis stating that approximated the model is a plausible distribution for the data. The SD indicates the bootstrapped standard deviations.
 
 ### 3.4.3 Compare
 
