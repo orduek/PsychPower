@@ -38,9 +38,9 @@ library("PsychPower")
 
 # 3. Example
 
-This example outlines the analysis performed in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/) using sample data also include in the same publication.
+This example outlines the analysis performed in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/) using sample data from that publication.
 
-The sample data consist of 39,700 complete answers to the 13-item anxiety subscale of the Depression Anxiety Stress Scales (DASS; [Nieuwenhuijsen et al. (2003)](https://oem.bmj.com/content/60/suppl_1/i77.long)). All 13 items were rated on a 4-point Likert scale, ranging from 1 to 4. The raw data were collected and provided by the [Open-Source Psychometrics Project](https://openpsychometrics.org/about/).
+The sample data consist of 39,700 complete answers to the 13-item anxiety subscale of the Depression Anxiety Stress Scales (DASS; [Nieuwenhuijsen et al. (2003)](https://oem.bmj.com/content/60/suppl_1/i77.long)). All 13 items were rated on a 4-point Likert scale ranging from 1 to 4. The raw data were collected and provided by the [Open-Source Psychometrics Project](https://openpsychometrics.org/about/).
 
 ## 3.1 Load Data
 
@@ -62,7 +62,7 @@ As outlined in the publication, a phenotype is defined as a unique combination o
 
 ### 3.2.1 Binarize variables
 
-Here, we are only interested in presence or absence of a symptom and not in their severity. Therefore, we need to dichotomize or `binarize` the participants answers. We have to choose a cut-off, defining which ratings should be indicative of symptom presence or absence.
+Here, we are only interested in presence or absence of a symptom and not in their severity. Therefore, we need to dichotomize or `binarize` the participants' answers. We have to choose a cut-off, defining which ratings should be indicative of symptom's presence or absence.
 
 In this example, a cut-off of 2 is chosen based on the literature.
 
@@ -80,7 +80,7 @@ data_binarized[,14:19]
 
 ### 3.2.2 Determine Phenotye Frequency
 
-Next, we determine the number of unique phenotypes in the sample and count how many times each unique phenotypes was reported.
+Next, we determine the number of unique phenotypes in the sample and count how many times each unique phenotype was reported.
 
 ```{r , echo=TRUE}
 data_frequency <- pheno_frequency(
