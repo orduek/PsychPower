@@ -62,7 +62,7 @@ As outlined in the publication, a phenotype is defined as a unique combination o
 
 ### 3.2.1 Binarize variables
 
-Here, we are only interested in presence or absence of a symptom and not in their severity. Therefore, we need to dichotomize or `binarize` the participants' answers. We have to choose a cut-off, defining which ratings should be indicative of symptom's presence or absence.
+Here, we are only interested in presence or absence of a symptom and not in their severity. Therefore, we need to dichotomize or `binarize` the participants' answers. We have to choose a cut-off, defining which ratings should be indicative of a symptom's presence or absence.
 
 In this example, a cut-off of 2 is chosen based on the literature.
 

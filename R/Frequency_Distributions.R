@@ -97,48 +97,59 @@ describe_pheno_distr <-
               bs_p_ln <- bootstrap_p(data[[2]], no_of_sims = nBoots, threads = nCores)
               bs_p_ex <- bootstrap_p(data[[3]], no_of_sims = nBoots, threads = nCores)
 
-              res <- matrix(ncol = 3, nrow = 9)
+              ## Bootstrap parameters
+              bs_p_pl_par <- bootstrap(data[[1]], no_of_sims = nBoots, threads = nCores)
+              bs_p_ln_par <- bootstrap(data[[2]], no_of_sims = nBoots, threads = nCores)
+              bs_p_ex_par <- bootstrap(data[[3]], no_of_sims = nBoots, threads = nCores)
+
+              res <- matrix(ncol = 3, nrow = 11)
               colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
               rownames(res) <- c(
-                "Xmin", "SDxmin", "alpha/exponent", "SDalpha/exponent",
-                "log(mu)", "SDlog(mu)", "log(sigma)", "SDlog(sigma)",
+                "Xmin", "SDxmin", "alpha", "SDalpha",
+                "mu", "SDmu", "sigma", "SDsigma", "exponent", "SDexponent",
                 "Boot_P_Value"
               )
               res[1,1] <- data[[1]]$xmin
-              res[2,1] <- sd(bs_p_pl$bootstraps$xmin)
+              res[2,1] <- sd(bs_p_pl_par$bootstraps$xmin)
               res[3,1] <- data[[1]]$pars
-              res[4,1] <- sd(bs_p_pl$bootstraps$pars)
+              res[4,1] <- sd(bs_p_pl_par$bootstraps$pars)
               res[5,1] <- NA
               res[6,1] <- NA
               res[7,1] <- NA
               res[8,1] <- NA
-              res[9,1] <- bs_p_pl$p
+              res[9,1] <- NA
+              res[10,1] <- NA
+              res[11,1] <- bs_p_pl$p
 
               res[1,2] <- data[[2]]$xmin
-              res[2,2] <- sd(bs_p_ln$bootstraps$xmin)
+              res[2,2] <- NA
               res[3,2] <- NA
               res[4,2] <- NA
               res[5,2] <- data[[2]]$pars[1]
-              res[6,2] <- sd(bs_p_ln$bootstraps$pars1)
+              res[6,2] <- sd(bs_p_ln_par$bootstraps$pars1)
               res[7,2] <- data[[2]]$pars[2]
-              res[8,2] <- sd(bs_p_ln$bootstraps$pars2)
-              res[9,2] <- bs_p_ln$p
+              res[8,2] <- sd(bs_p_ln_par$bootstraps$pars2)
+              res[9,2] <- NA
+              res[10,2] <- NA
+              res[11,2] <- bs_p_ln$p
 
               res[1,3] <- data[[3]]$xmin
-              res[2,3] <- sd(bs_p_ex$bootstraps$xmin)
-              res[3,3] <- data[[3]]$pars
-              res[4,3] <- sd(bs_p_ex$bootstraps$pars)
+              res[2,3] <- NA
+              res[3,3] <- NA
+              res[4,3] <- NA
               res[5,3] <- NA
               res[6,3] <- NA
               res[7,3] <- NA
               res[8,3] <- NA
-              res[9,3] <- bs_p_ex$p
+              res[9,3] <- data[[3]]$pars
+              res[10,3] <- sd(bs_p_ex_par$bootstraps$pars)
+              res[11,3] <- bs_p_ex$p
             } else {
-              res <- matrix(ncol = 3, nrow = 9)
+              res <- matrix(ncol = 3, nrow = 11)
               colnames(res) <- c("PowerLaw", "LogNormal", "Exponential")
               rownames(res) <- c(
-                "Xmin", "SDxmin", "alpha/exponent", "SDalpha/exponent",
-                "log(mu)", "SDlog(mu)", "log(sigma)", "SDlog(sigma)",
+                "Xmin", "SDxmin", "alpha", "SDalpha",
+                "mu", "SDmu", "sigma", "SDsigma", "exponent", "SDexponent",
                 "Boot_P_Value"
               )
 
@@ -151,6 +162,8 @@ describe_pheno_distr <-
               res[7,1] <- NA
               res[8,1] <- NA
               res[9,1] <- NA
+              res[10,1] <- NA
+              res[11,1] <- NA
 
               res[1,2] <- data[[2]]$xmin
               res[2,2] <- NA
@@ -161,16 +174,20 @@ describe_pheno_distr <-
               res[7,2] <- data[[2]]$pars[2]
               res[8,2] <- NA
               res[9,2] <- NA
+              res[10,2] <- NA
+              res[11,2] <- NA
 
               res[1,3] <- data[[3]]$xmin
               res[2,3] <- NA
-              res[3,3] <- data[[3]]$pars
+              res[3,3] <- NA
               res[4,3] <- NA
               res[5,3] <- NA
               res[6,3] <- NA
               res[7,3] <- NA
               res[8,3] <- NA
-              res[9,3] <- NA
+              res[9,3] <- data[[3]]$pars
+              res[10,3] <- NA
+              res[11,3] <- NA
             }
             return(res)
           }
