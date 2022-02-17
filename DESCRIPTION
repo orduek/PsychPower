@@ -1,6 +1,6 @@
 Package: PsychPower
 Title: Creates Symptom Phenotypes and Assess Their Frequency Distribution
-Version: 0.0.1.2
+Version: 0.0.1.3
 Authors@R: 
     person(given = "Or",
            family = "Duek",
