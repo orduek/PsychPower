@@ -222,4 +222,43 @@ common_pheno <- function(data, frequency = "freq", n_phenotypes = 5) {
   }
 }
 
+################################################
+## Calculating prevalence of specific symptom ##
+################################################
 
+prevalence_profile <- function(data) {
+# remove frequncy and bin from the data
+if(any(names(data)=='freq')) {
+  # remove frequency and total bin columns
+  data <- data %>% select(-c(freq, total_bin))
+}
+# go over each item
+h <- matrix(nrow = ncol(data), ncol = 2)
+for (i in 1:ncol(data)) {
+  h[i,2] <- sum(data[,i]) / nrow(data)
+  h[i,1] <- i
+}
+ return(h)
+}
+
+prevalence_person <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
+
+  # Check whether data contains characters or logical
+  if (any(sapply(data, is.character) == TRUE) |
+      any(sapply(data, is.logical) == TRUE)) {
+    stop("Character or logical variables are not allowed")
+  } else {
+
+    # first grab only v_bin columns
+    data1 <- data %>% select(all_of(target_columns))
+    h <- matrix(nrow = ncol(data), ncol = 2)
+    for (i in 1:ncol(data)) {
+      h[i,2] <- sum(data[,i]) / nrow(data)
+      h[i,1] <- i
+    }
+
+ }
+
+  return(h)
+
+}

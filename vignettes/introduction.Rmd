@@ -126,6 +126,19 @@ fig1 <- plot_pheno(data_frequency, frequency = "freq",
                    n_phenotypes = 50, color = "grey26")
 fig1
 ```
+## Prevalence
+Prevalence per profile
+
+```{r}
+h <- prevalence_profile(data_frequency)
+```
+
+Prevalence per person
+
+```{r}
+l <- prevalence_person(data_binarized)
+```
+
 
 ## 3.4 Phenotype frequency distribution
 
