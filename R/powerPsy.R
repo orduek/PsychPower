@@ -237,8 +237,11 @@ h <- matrix(nrow = ncol(data), ncol = 2)
 for (i in 1:ncol(data)) {
   h[i,2] <- sum(data[,i]) / nrow(data)
   h[i,1] <- i
+
 }
- return(h)
+  m <- h %>% data.frame() %>% setNames(c('item','percentage'))
+
+  return(m)
 }
 
 prevalence_person <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
@@ -251,14 +254,14 @@ prevalence_person <- function(data, target_columns = tidyselect::starts_with("v_
 
     # first grab only v_bin columns
     data1 <- data %>% select(all_of(target_columns))
-    h <- matrix(nrow = ncol(data), ncol = 2)
-    for (i in 1:ncol(data)) {
-      h[i,2] <- sum(data[,i]) / nrow(data)
+    h <- matrix(nrow = ncol(data1), ncol = 2)
+    for (i in 1:ncol(data1)) {
+      h[i,2] <- sum(data1[,i]) / nrow(data1)
       h[i,1] <- i
     }
 
  }
-
-  return(h)
+  m <- h %>% data.frame() %>% setNames(c('item','percentage'))
+  return(m)
 
 }
