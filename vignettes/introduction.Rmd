@@ -34,6 +34,7 @@ Once the `PsychPower` is installed it can be loaded the usual way.
 
 ```{r load, echo=TRUE, warning=FALSE}
 library("PsychPower")
+library("gt")
 ```
 
 # 3. Example
@@ -126,6 +127,21 @@ fig1 <- plot_pheno(data_frequency, frequency = "freq",
                    n_phenotypes = 50, color = "grey26")
 fig1
 ```
+## Prevalence
+Prevalence per profile
+
+```{r}
+h <- prevalence_profile(data_frequency)
+gt(h)
+```
+
+Prevalence per person
+
+```{r}
+l <- prevalence_person(data_binarized)
+gt(l)
+```
+
 
 ## 3.4 Phenotype frequency distribution
 
