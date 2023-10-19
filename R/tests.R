@@ -58,8 +58,8 @@ test_common_pheno <- function() {
 
     result <- common_pheno(data_test, n_phenotypes = 3)
 
-    testthat::expect_equal(nrow(result), 3)  # Expecting three phenotypes
-    testthat::expect_true(2 %in% result$freq) # The number 2 is the frequency of the most common phenotype
+    testthat::expect_equal(nrow(result), 3)  # Expecting three combination
+    testthat::expect_true(2 %in% result$freq) # The number 2 is the frequency of the most common combination
   })
 }
 
