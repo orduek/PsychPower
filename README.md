@@ -1,7 +1,7 @@
 <img src="man/figures/logo.png" width = 250 />
 
 # The PsychPower package
-An R package to define, assess, and describe symptom phenotypes and their frequency distribution in a sample.
+An R package to define, assess, and describe symptom combinations and their frequency distribution in a sample.
 
 # Installation
 

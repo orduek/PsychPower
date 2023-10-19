@@ -2,24 +2,24 @@
 % Please edit documentation in R/powerPsy.R
 \name{plot_pheno}
 \alias{plot_pheno}
-\title{Plot phenotypes}
+\title{Plot symptom combinations}
 \usage{
 plot_pheno(data, frequency = "freq", n_phenotypes = 100, color = "grey26")
 }
 \arguments{
 \item{data}{a dataframe or matrix}
 
-\item{frequency}{column indicating phenotype frequency, default = "freq"}
+\item{frequency}{column indicating symptom combination frequency, default = "freq"}
 
-\item{n_phenotypes}{The number of phenotypes plotted, default = 100}
+\item{n_phenotypes}{The number of symptom combinations plotted, default = 100}
 
-\item{color}{The color of the phenotypes}
+\item{color}{The color of the symptom combinations}
 }
 \value{
 a plot
 }
 \description{
-\code{plot_Pheno} plots the frequency of each unique phenotype in the sample in descending order
+\code{plot_pheno} plots the frequency of each unique symptom combinations in the sample in descending order
 }
 \examples{
 \dontrun{

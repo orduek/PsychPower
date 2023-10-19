@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 # 1. Aim
 
-This vignette outlines how `PsychPower` can be used to determine how many and which unique symptom phenotypes are present in a sample, and how the frequency distribution of all phenotypes in the same sample can be described mathematically. A detailed motivation for this analysis as well as the technicalities of the procedure are outlined in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/).
+This vignette outlines how `PsychPower` can be used to determine how many and which unique symptom phenotypes are present in a sample. A detailed motivation for this analysis as well as the technicalities of the procedure are outlined in [Spiller et al. (2021)](https://psyarxiv.com/g4kf8/).
 
 # 2. Installation
 
@@ -34,7 +34,6 @@ Once the `PsychPower` is installed it can be loaded the usual way.
 
 ```{r load, echo=TRUE, warning=FALSE}
 library("PsychPower")
-library("gt")
 ```
 
 # 3. Example
@@ -57,7 +56,7 @@ Next, we inspect the first 10 rows (participants) and 5 of the total 13 columns 
 data_test[,1:5]
 ```
 
-## 3.2 Define Phenotypes
+## 3.2 Define symptom combinations
 
 As outlined in the publication, a phenotype is defined as a unique combination of a finite set of items (in this example symptoms) used to describe or define a psychological construct (in this example a mental disorder).
 
@@ -79,9 +78,9 @@ Inspection of the binarized ratings of the first 5 variables reveals that the ra
 data_binarized[,14:19]
 ```
 
-### 3.2.2 Determine Phenotye Frequency
+### 3.2.2 Determine Symptom Combination Frequency
 
-Next, we determine the number of unique phenotypes in the sample and count how many times each unique phenotype was reported.
+Next, we determine the number of unique symptom combinations in the sample and count how many times each unique phenotype was reported.
 
 ```{r , echo=TRUE}
 data_frequency <- pheno_frequency(
@@ -93,13 +92,13 @@ data_frequency <- pheno_frequency(
 The output of `pheno_frequency()` is a dataframe in which every row represents one unique phenotype. The frequency of each phenotype is indicated in the column "freq". Hence, whenever there is at least one phenotype that is reported more than once, the dataframe does *not* have the same length as the initial data.      
                                             
 
-## 3.3 Describe Phenotypes
+## 3.3 Describe symptom combinations
 
-Next, we explore the characteristics of the different phenotypes present in the sample.
+Next, we explore the characteristics of the different symptom combinations present in the sample.
 
-### 3.3.1 Most common phenotypes
+### 3.3.1 Most common symptom combinations
 
-First, we inspect the symptom combinations of the most common phenotypes (in this example, the one of the 5 most common).
+First, we inspect the symptom combinations of the most common symptom combinations (in this example, the one of the 5 most common).
 
 ```{r , echo=TRUE}
 common_pheno(data_frequency, frequency = "freq", n_phenotypes = 5)
@@ -127,81 +126,6 @@ fig1 <- plot_pheno(data_frequency, frequency = "freq",
                    n_phenotypes = 50, color = "grey26")
 fig1
 ```
-## Prevalence
-Prevalence per profile
-
-```{r}
-h <- prevalence_profile(data_frequency)
-gt(h)
-```
-
-Prevalence per person
-
-```{r}
-l <- prevalence_person(data_binarized)
-gt(l)
-```
-
-
-## 3.4 Phenotype frequency distribution
-
-The distribution shown in Figure 1 (see above) is starkly skewed. There are multiple skewed distributions and we would like to test which of these distributions best approximates the frequency distribution. We first determine the best fitting approximations relying on the methods developed by [Clauset et al, 2009](https://arxiv.org/abs/0706.1062) and implemented in the [poweRlaw](https://CRAN.R-project.org/package=poweRlaw) package. Subsequently the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` are used to describe and plot the results as well as to test the comparative for of the three different distributions.
-
-### 3.4.1 Estimate
-
-The distributions can be approximated in the following way.
-
-```{r , echo=TRUE}
-freq_distribution <- pheno_distributions(data_frequency, frequency = "freq")
-```
-
-
-**NOTE**: The function `pheno_distributions()` outputs a list of three `poweRlaw` objects. These objects have the following order: 1. a power-law model, 2. a log-normal model and 3. an exponential model. This exact order must be present for the functions `describe_pheno_distr()`, `compare_pheno_distr()`, and `plot_pheno_distr()` to work. Importantly, these objects can be handled (e.g., visualized) like any other `poweRlaw` objects using the methods reported in the vignettes of the `poweRlaw` package.
-To allow for direct comparisons of the three models, the minimum (Xmin) must be the same in all three models. Xmin of all distributions is set to the Xmin of the best fitting power-law model (for more details see [Clauset et al, 2009](https://arxiv.org/abs/0706.1062)). 
-
-
-### 3.4.2 Describe
-
-The parameters of the best fitting distributions are obtained next. nBoots determines the number of simulations used to bootstrap the parameters. It should be set to 1000 or more which will result in an extended running time (it is set to 5 for illustrative purpose here).
-
-```{r , echo=TRUE}
-desc_freq <- describe_pheno_distr(freq_distribution, bootStrap = T, 
-                                  nBoots = 5, nCores = 1)
-desc_freq
-```
-
-The Xmin indicates the minimal value of X in all three models. Alpha indicates the base in the power-law model, exponent the exponent in the exponential model. Mu and sigma are the two parameters that describe a log-normal distribution. Boot_P_Value is the *P* value of a goodness-of-fit test. Values smaller than 0.05 indicates refusal of the null hypothesis stating that approximated the model is a plausible distribution for the data. The SD indicates the bootstrapped standard deviations.
-
-### 3.4.3 Compare
-
-The fit of the three distributions are compared using *one-sided* tests with alpha set to 0.05. Of note, the output is a list of *P* values. Because the tests are one-sided the output is not symmetric. The *P* value shown is always the one for testing the null hypothesis (HO) that the distribution in the row has equal fit to the distribution in the column.
-
-```{r , echo=TRUE}
-comp_fit_freq <- compare_pheno_distr(freq_distribution)
-```
-
-Results:
-```{r echo=FALSE, echo=TRUE}
-comp_fit_freq
-```
-
-Hence, the exponential distribution has a significant inferior fit compared to the power-law and the log-normal distribution (*P* = .0027 and .0026). 
-
-### 3.4.4 Plot
-
-Finally, the phenotype frequency distributions and the best fitting approximated distributions are plotted. In this plot, the x-axis denotes the number of times phenotypes were reported and the y-axis the complementary cumulative distribution function (CDF), indicating the probability of a given value X (the frequency of a given phenotype) to take a value above x (a frequency higher than the one of a given phenotype). The black circles represent all phenotypes with the same specific frequency. The red solid line represents the best fitting power-law model. The blue dashed line corresponds to the best fitting log-normal model and the double dashed yellow line to the exponential model.
-
-```{r message=FALSE, warning=FALSE}
-fig2 <- plot_pheno_distr(freq_distribution, limity = 10^-4, limitx = 10^4)
-```
-
-```{r message=FALSE, warning=FALSE, echo=TRUE, fig.height=4, fig.width=6}
-fig2 
-```
-
-
-**NOTE**: The limits of the x and y axis have to be chosen to depict the full distribution. `limity = 10^-j` and `limitx = 10^k` can be used to adjust the limits. 
-
 
 # 4. Citation
 

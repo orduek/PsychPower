@@ -1,35 +1,35 @@
 Package: PsychPower
-Title: Creates Symptom Phenotypes and Assess Their Frequency Distribution
-Version: 0.0.1.3
-Authors@R: 
+Title: Creates Symptom Combinations and Assess Their Frequency Distribution
+Version: 0.0.2
+Authors@R:c(
     person(given = "Or",
            family = "Duek",
-           role = c("aut", "cre"),
-           email = "or.duek@yale.edu",
-           comment = c(ORCID = "0000-0001-5211-7946"))
+           role = c("aut", "ctb")),
     person(given = "Tobias R.",
            family = "Spiller",
            role = c("aut", "cre"),
-           email = "tobias.spiller@yale.edu",
-           comment = c(ORCID = "0000-0002-0107-0743"))
-Description: Includes tools for the construction and analysis of symptom phenotypes.
+           email = "tobias.spiller@yale.edu")
+           )
+Maintainer: Tobias R. Spiller <tobias.spiller@yale.edu>
+Description: Includes tools for the construction and analysis of symptom combinations. With this package, users can streamline the process of constructing symptom combinations and perform various analyses on the generated symptom combinations to better understand their characteristics and distribution.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
 Imports:
     dplyr (>= 1.0.0),
+    tidyselect,
     ggplot2,
-    plyr,
-    scales,
-    tidyselect
+    purrr,
+    magrittr,
+    testthat
 Depends: 
-    R (>= 4.0.0),
-    poweRlaw (>= 0.70.0)
+    R (>= 4.0.0)
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Suggests: 
     rmarkdown,
-    knitr,
-    testthat (>= 3.0.0)
+    knitr
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+URL: https://github.com/orduek/PsychPower/
+BugReports: https://github.com/orduek/PsychPower/issues

@@ -2,22 +2,22 @@
 % Please edit documentation in R/powerPsy.R
 \name{common_pheno}
 \alias{common_pheno}
-\title{Show most common phenotypes}
+\title{Show most common symptom combinations}
 \usage{
 common_pheno(data, frequency = "freq", n_phenotypes = 5)
 }
 \arguments{
 \item{data}{a dataframe or matrix}
 
-\item{frequency}{column indicating phenotype frequency, default = "freq"}
+\item{frequency}{column indicating symptom combinations frequency, default = "freq"}
 
-\item{n_phenotypes}{, number of phenotypes shown, default = 5}
+\item{n_phenotypes}{, number of symptom combinations shown, default = 5}
 }
 \value{
 print
 }
 \description{
-Prints the value of each variable of the most common phenotypes
+Prints the value of each variable of the most common symptom combinations
 }
 \examples{
 \dontrun{

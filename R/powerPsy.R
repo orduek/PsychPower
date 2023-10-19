@@ -1,4 +1,22 @@
-utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x"))
+utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x", "."))
+
+### 0. Helper functions ############################################################################
+# 0.1 Check for character or logical columns
+check_data_type <- function(data) {
+  if (any(purrr::map_lgl(data, ~is.character(.x) | is.logical(.x)))) {
+    stop("Character or logical variables are not allowed")
+  }
+}
+
+# 0.2 Set frequency column name to "freq"
+set_freq_colname <- function(data, frequency) {
+  if (!any(names(data) == frequency)) {
+    stop("Frequency column not identified")
+  }
+  names(data)[names(data) == frequency] <- "freq"
+  return(data)
+}
+
 
 ### Function 1 #####################################################################################
 #' Binarization
@@ -18,45 +36,35 @@ utils::globalVariables(c("freq", "m_pl", "m_ln", "m_ex", "sd", "x", "y", ".x"))
 #' }
 #' @export
 binarize <- function(data, cut_off) {
-
   # Check whether data contains characters or logical
-  if (any(sapply(data, is.character) == TRUE) |
-    any(sapply(data, is.logical) == TRUE)) {
-    stop("Character or logical variables are not allowed")
-  } else {
+  check_data_type(data)
 
-    ## Rename variables to "V1:VN" for binarization
-    colnames(data) <- c(paste0("V", 1:(ncol(data))))
+  ## Rename variables to "V1:VN" for binarization
+  new_colnames <- paste0("V", seq_along(data))
+  colnames(data) <- new_colnames
 
-    for (i in 1:(ncol(data))) {
-      orig <- paste("v_bin", i, sep = "")
-      bin <- paste("V", i, sep = "")
-      data[orig] <- case_when(
-        data[bin] <= cut_off ~ 0,
-        data[bin] > cut_off ~ 1
-      )
-    }
-    return(data)
-  }
+  bin_names <- paste0("v_bin", seq_along(data))
+  data[bin_names] <- ifelse(data <= cut_off, 0, 1)
+
+  return(data)
 }
 
 
-
 ### Function 2 #####################################################################################
-#' Determine phenotype frequency
+#' Determine symptom combinations frequency
 #'
-#' Determines the frequency of each unique phenotype in the dataframe
+#' Determines the frequency of each unique symptom combinations in the dataframe
 #' @param data The dataset, containing v_bin columns (of binarized set)
-#' @param target_columns The columns which include the variables of the phenotype.
+#' @param target_columns The columns which include the variables of the symptom combinations
 #' default = starts_with("v_bin"), using the output of \code{binarize}
-#' @return A dataframe containing the frequency of each phenotype
-#' and the sum of the values of all the variables constituting the phenotype
-#' The output has as many rows as phenotypes.
+#' @return A dataframe containing the frequency of each symptom combinations
+#' and the sum of the values of all the variables constituting the symptom combinations
+#' The output has as many rows as symptom combinations.
 #'
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate
-#' @importFrom plyr count
 #' @importFrom tidyselect starts_with
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #' \dontrun{
@@ -65,41 +73,39 @@ binarize <- function(data, cut_off) {
 #' }
 #' @export
 pheno_frequency <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
-
   # Check whether data contains characters or logical
-  if (any(sapply(data, is.character) == TRUE) |
-    any(sapply(data, is.logical) == TRUE)) {
-    stop("Character or logical variables are not allowed")
-  } else {
+  check_data_type(data)
 
-    # first grab only v_bin columns
-    data1 <- data %>% select(all_of(target_columns))
+  # First grab only v_bin columns
+  data_selected <- data %>% dplyr::select(all_of(target_columns))
 
-    ## Count frequency of profiles
-    data2_counted <- data1 %>% plyr::count()
+  ## Count frequency of profiles
+  data_counted <- data_selected %>%
+    dplyr::group_by(across(everything())) %>%
+    dplyr::summarise(freq = n(), .groups = "drop")
 
-    # Create sum score of endorsed symptoms
-    data2_counted <- data2_counted %>%
-      mutate(total_bin = rowSums(data2_counted) - freq)
+  # Create sum score of endorsed symptoms
+  data_counted <- data_counted %>%
+    dplyr::mutate(total_bin = rowSums(.) - freq)
 
-    return(data2_counted)
-  }
+  return(data_counted)
 }
 
 
 
 ### Function 3 #####################################################################################
-#' Plot phenotypes
+#' Plot symptom combinations
 #'
-#' \code{plot_Pheno} plots the frequency of each unique phenotype in the sample in descending order
+#' \code{plot_pheno} plots the frequency of each unique symptom combinations in the sample in descending order
 #' @param data a dataframe or matrix
-#' @param frequency column indicating phenotype frequency, default = "freq"
-#' @param n_phenotypes The number of phenotypes plotted, default = 100
-#' @param color The color of the phenotypes
+#' @param frequency column indicating symptom combination frequency, default = "freq"
+#' @param n_phenotypes The number of symptom combinations plotted, default = 100
+#' @param color The color of the symptom combinations
 #' @return a plot
 #'
 #' @import ggplot2
 #' @import dplyr
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #' \dontrun{
@@ -108,55 +114,51 @@ pheno_frequency <- function(data, target_columns = tidyselect::starts_with("v_bi
 #' }
 #' @export
 plot_pheno <- function(data, frequency = "freq", n_phenotypes = 100, color = "grey26") {
-
   # Check whether frequency is identified
-  if (!any(names(data) == frequency)) {
-    stop("Frequency colum not identified")
-  } else {
+  data <- set_freq_colname(data, frequency)
 
-    # Identify frequency column
-    names(data)[names(data) == frequency] <- "freq"
+  # Select & order symptom combinations to be plotted
+  data <- data %>%
+    dplyr::arrange(desc(freq)) %>%
+    dplyr::slice_head(n = n_phenotypes) %>%
+    dplyr::select(freq)
 
-    # Select & order phenotypes to be plotted
-    data <- data %>%
-      arrange(desc(freq)) %>%
-      top_n(freq, n = n_phenotypes) %>%
-      select(freq)
+  max_y <- max(data$freq) * 1.05 # Increase by 5% to simulate expansion
 
-    # Plot
-    g <- ggplot(data, aes(x = as.factor(1:nrow(data)), y = freq)) +
-      geom_bar(stat = "identity", fill = color) +
-      scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
-      xlab("") +
-      ylab("") +
-      theme_minimal() +
-      theme(
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.major.y = element_line(size = .2, color = "black"),
-        panel.grid.minor.y = element_blank(),
-        panel.border = element_rect(colour = "black", fill = NA, size = 1)
-      )
-
-    return(g)
-  }
+  g <- ggplot2::ggplot(data, aes(x = as.factor(1:nrow(data)), y = freq)) +
+    ggplot2::geom_bar(stat = "identity", fill = color) +
+    ggplot2::ylim(0, max_y) +  # Set y-axis limits here
+    labs(x = "", y = "") +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(
+      axis.ticks = element_blank(),
+      axis.text.x = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(linewidth = .2, color = "black"),
+      panel.grid.minor.y = element_blank(),
+      panel.border = element_rect(colour = "black", fill = NA, linewidth = 1)
+    )
+  return(g)
 }
 
 
 
+
 ### Function 4 #####################################################################################
-#' Describe phenotypes in sample
+#' Describe symptom combinations in sample
 #'
-#' Describes basic information about the distribution of the phenotype frequency.
+#' Describes basic information about the distribution of the symptom combinations frequency.
 #' Uses the frequency calculated with the pheno_frequency() function.
 #' @param data a dataframe or matrix
-#' @param frequency column indicating phenotype frequency, default = "freq"
+#' @param frequency column indicating symptom combinations frequency, default = "freq"
 #' @return a matrix indicating
-#' the number of unique phenotypes
-#' the frequency of the most common phenotype
-#' the median frequency of all phenotypes
+#' the number of unique symptom combinations
+#' the frequency of the most common symptom combinations
+#' the median frequency of all symptom combinations
+#'
 #' @importFrom  stats median
+#' @importFrom magrittr %>%
+#'
 #' @examples
 #' \dontrun{
 #' desc_pheno <- describe_pheno(data_frequency, frequency = "freq")
@@ -164,39 +166,35 @@ plot_pheno <- function(data, frequency = "freq", n_phenotypes = 100, color = "gr
 #' }
 #' @export
 describe_pheno <- function(data, frequency = "freq") {
-
   # Check whether frequency is identified
-  if (!any(names(data) == frequency)) {
-    stop("Frequency colum not identified")
-  } else {
+  data <- set_freq_colname(data, frequency)
 
-    # Identify frequency column
-    names(data)[names(data) == frequency] <- "freq"
+  # Prepare output
+  matrix_data <- c(
+    nrow(data), # Number of unique symptom combinations
+    max(data$freq), # Frequency of most common symptom combinations
+    stats::median(data$freq) # Median frequency
+  )
 
-    # Prepare output
-    res <- matrix(ncol = 1, nrow = 3)
-    rownames(res) <- c("Unique Phenotypes", "N most frequent", "Median frequency")
-    colnames(res) <- c("Number")
+  res <- matrix(matrix_data, ncol = 1, nrow = 3)
+  rownames(res) <- c("Unique Symptom combinations", "N most frequent", "Median frequency")
+  colnames(res) <- c("Number")
 
-    res[1, 1] <- nrow(data) # Number of unique phenotypes
-    res[2, 1] <- max(data$freq) # Number of endorsements of most common phenotype
-    res[3, 1] <- median(data$freq) # Number of endorsements of most common phenotype
-
-    return(res)
-  }
+  return(res)
 }
 
 
-
 ### Function 5 #####################################################################################
-#' Show most common phenotypes
+#' Show most common symptom combinations
 #'
-#' Prints the value of each variable of the most common phenotypes
+#' Prints the value of each variable of the most common symptom combinations
 #' @param data a dataframe or matrix
-#' @param frequency column indicating phenotype frequency, default = "freq"
-#' @param n_phenotypes , number of phenotypes shown, default = 5
+#' @param frequency column indicating symptom combinations frequency, default = "freq"
+#' @param n_phenotypes , number of symptom combinations shown, default = 5
 #' @return print
+#'
 #' @importFrom dplyr arrange
+#' @importFrom magrittr %>%
 #'
 #' @examples
 #' \dontrun{
@@ -205,63 +203,10 @@ describe_pheno <- function(data, frequency = "freq") {
 #' @export
 common_pheno <- function(data, frequency = "freq", n_phenotypes = 5) {
 
-  # Check whether frequency is identified
-  if (!any(names(data) == frequency)) {
-    stop("Frequency colum not identified")
-  } else {
+   # Check whether frequency is identified
+  data <- set_freq_colname(data, frequency)
 
-    # Identify frequency column
-    names(data)[names(data) == frequency] <- "freq"
+  top_data <- data %>% dplyr::arrange(desc(freq)) %>% dplyr::slice_head(n = n_phenotypes)
 
-    data <- data %>%
-      arrange(desc(freq))
-
-    for (i in 1:n_phenotypes) {
-      print(data[i, ])
-    }
-  }
-}
-
-################################################
-## Calculating prevalence of specific symptom ##
-################################################
-
-prevalence_profile <- function(data) {
-# remove frequncy and bin from the data
-if(any(names(data)=='freq')) {
-  # remove frequency and total bin columns
-  data <- data %>% select(-c(freq, total_bin))
-}
-# go over each item
-h <- matrix(nrow = ncol(data), ncol = 2)
-for (i in 1:ncol(data)) {
-  h[i,2] <- sum(data[,i]) / nrow(data)
-  h[i,1] <- i
-
-}
-  m <- h %>% data.frame() %>% setNames(c('item','percentage'))
-
-  return(m)
-}
-
-prevalence_person <- function(data, target_columns = tidyselect::starts_with("v_bin")) {
-
-  # Check whether data contains characters or logical
-  if (any(sapply(data, is.character) == TRUE) |
-      any(sapply(data, is.logical) == TRUE)) {
-    stop("Character or logical variables are not allowed")
-  } else {
-
-    # first grab only v_bin columns
-    data1 <- data %>% select(all_of(target_columns))
-    h <- matrix(nrow = ncol(data1), ncol = 2)
-    for (i in 1:ncol(data1)) {
-      h[i,2] <- sum(data1[,i]) / nrow(data1)
-      h[i,1] <- i
-    }
-
- }
-  m <- h %>% data.frame() %>% setNames(c('item','percentage'))
-  return(m)
-
+  return(top_data)
 }

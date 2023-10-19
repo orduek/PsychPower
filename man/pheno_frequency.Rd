@@ -2,23 +2,23 @@
 % Please edit documentation in R/powerPsy.R
 \name{pheno_frequency}
 \alias{pheno_frequency}
-\title{Determine phenotype frequency}
+\title{Determine symptom combinations frequency}
 \usage{
 pheno_frequency(data, target_columns = tidyselect::starts_with("v_bin"))
 }
 \arguments{
 \item{data}{The dataset, containing v_bin columns (of binarized set)}
 
-\item{target_columns}{The columns which include the variables of the phenotype.
+\item{target_columns}{The columns which include the variables of the symptom combinations
 default = starts_with("v_bin"), using the output of \code{binarize}}
 }
 \value{
-A dataframe containing the frequency of each phenotype
-and the sum of the values of all the variables constituting the phenotype
-The output has as many rows as phenotypes.
+A dataframe containing the frequency of each symptom combinations
+and the sum of the values of all the variables constituting the symptom combinations
+The output has as many rows as symptom combinations.
 }
 \description{
-Determines the frequency of each unique phenotype in the dataframe
+Determines the frequency of each unique symptom combinations in the dataframe
 }
 \examples{
 \dontrun{

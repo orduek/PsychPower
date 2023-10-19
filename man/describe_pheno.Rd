@@ -2,23 +2,23 @@
 % Please edit documentation in R/powerPsy.R
 \name{describe_pheno}
 \alias{describe_pheno}
-\title{Describe phenotypes in sample}
+\title{Describe symptom combinations in sample}
 \usage{
 describe_pheno(data, frequency = "freq")
 }
 \arguments{
 \item{data}{a dataframe or matrix}
 
-\item{frequency}{column indicating phenotype frequency, default = "freq"}
+\item{frequency}{column indicating symptom combinations frequency, default = "freq"}
 }
 \value{
 a matrix indicating
-the number of unique phenotypes
-the frequency of the most common phenotype
-the median frequency of all phenotypes
+the number of unique symptom combinations
+the frequency of the most common symptom combinations
+the median frequency of all symptom combinations
 }
 \description{
-Describes basic information about the distribution of the phenotype frequency.
+Describes basic information about the distribution of the symptom combinations frequency.
 Uses the frequency calculated with the pheno_frequency() function.
 }
 \examples{
